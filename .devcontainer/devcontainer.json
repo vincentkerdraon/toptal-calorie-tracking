@@ -1,0 +1,30 @@
+{
+    "name": "Go Dev Container",
+    "image": "golang:latest",
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2.5.2": {
+            "installZsh": true,
+            "installOhMyZsh": true,
+            "username": "vscode"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "golang.go", // Go language support
+                "ms-vscode.vscode-remote.remote-containers" // Remote Containers extension
+            ],
+            "settings": {
+                "go.useLanguageServer": true,
+                "go.gopath": "/go",
+                "go.toolsManagement.autoUpdate": true,
+                "editor.formatOnSave": true
+            }
+        }
+    },
+    "mounts": [
+        "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
+    ],
+    "postCreateCommand": "go version",
+    "remoteUser": "vscode"
+}
