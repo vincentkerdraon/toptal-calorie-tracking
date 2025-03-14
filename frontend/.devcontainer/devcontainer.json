@@ -1,0 +1,21 @@
+{
+    "name": "Angular DevContainer",
+    "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:latest",
+    "runArgs": [
+        "--init"
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "angular.ng-template",
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    },
+    "postCreateCommand": "npm install -g @angular/cli && npm install && echo 'source <(ng completion script)' >> ~/.bashrc",
+    "forwardPorts": [
+        4200
+    ],
+    "remoteUser": "node"
+}
