@@ -1,68 +1,59 @@
-# Calory Sample Project
+# CalorySampleProject
 
-This is a sample Angular application named "Calory Sample Project". The purpose of this project is to demonstrate the structure and functionality of a basic Angular application.
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
 
-## Project Structure
+## Development server
 
-```
-calory-sample-project
-├── src
-│   ├── app
-│   │   ├── app.component.html
-│   │   ├── app.component.ts
-│   │   ├── app.module.ts
-│   │   └── app-routing.module.ts
-│   ├── assets
-│   ├── environments
-│   │   ├── environment.prod.ts
-│   │   └── environment.ts
-│   ├── index.html
-│   ├── main.ts
-│   ├── polyfills.ts
-│   └── styles.css
-├── angular.json
-├── package.json
-├── tsconfig.json
-└── README.md
+To start a local development server, run:
+
+```bash
+ng serve
 ```
 
-## Getting Started
+Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
-To get started with the Calory Sample Project, follow these steps:
+## Code scaffolding
 
-1. **Clone the repository**:
-   ```
-   git clone <repository-url>
-   ```
+Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-2. **Navigate to the project directory**:
-   ```
-   cd calory-sample-project
-   ```
+```bash
+ng generate component component-name
+```
 
-3. **Install dependencies**:
-   ```
-   npm install
-   ```
+For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
 
-4. **Run the application**:
-   ```
-   ng serve
-   ```
+```bash
+ng generate --help
+```
 
-5. **Open your browser**:
-   Navigate to `http://localhost:4200/` to see the application in action.
+## Building
 
-## Features
+To build the project run:
 
-- Basic Angular application structure
-- Routing setup
-- Environment configurations for development and production
+```bash
+ng build
+```
 
-## Contributing
+This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue for any suggestions or improvements.
+## Running unit tests
 
-## License
+To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+```bash
+ng test
+```
+
+## Running end-to-end tests
+
+For end-to-end (e2e) testing, run:
+
+```bash
+ng e2e
+```
+
+Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Additional Resources
+
+For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
