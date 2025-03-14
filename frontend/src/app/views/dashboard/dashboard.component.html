@@ -1,27 +1,5 @@
-<!-- filepath: /workspaces/toptal-big-project/frontend/src/app/views/dashboard/dashboard.component.html -->
 <div class="container mt-5">
   <h2>Dashboard</h2>
-
-  <form [formGroup]="filterForm" (ngSubmit)="onFilterChange()">
-    <div class="form-row">
-      <div class="form-group col-md-5">
-        <label for="from">From</label>
-        <input
-          type="date"
-          id="from"
-          formControlName="from"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group col-md-5">
-        <label for="to">To</label>
-        <input type="date" id="to" formControlName="to" class="form-control" />
-      </div>
-      <div class="form-group col-md-2 align-self-end">
-        <button type="submit" class="btn btn-primary">Filter</button>
-      </div>
-    </div>
-  </form>
 
   <form [formGroup]="addFoodForm" (ngSubmit)="onAddFood()">
     <div class="form-row">
@@ -66,6 +44,58 @@
       </div>
     </div>
   </form>
+
+  <form [formGroup]="filterForm" (ngSubmit)="onFilterChange()">
+    <div class="form-row">
+      <div class="form-group col-md-5">
+        <label for="from">From</label>
+        <input
+          type="date"
+          id="from"
+          formControlName="from"
+          class="form-control"
+          (ngModelChange)="applyFilter()"
+        />
+      </div>
+      <div class="form-group col-md-5">
+        <label for="to">To</label>
+        <input
+          type="date"
+          id="to"
+          formControlName="to"
+          class="form-control"
+          (ngModelChange)="applyFilter()"
+        />
+      </div>
+    </div>
+  </form>
+
+  <div class="mt-4">
+    <h3>Calories Per Day</h3>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Calories</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let entry of caloriesPerDay">
+          <td>{{ entry.date }}</td>
+          <td>{{ entry.calories }}</td>
+          <td>
+            <button
+              class="btn btn-secondary"
+              (click)="setDateFilterToDay(entry.date)"
+            >
+              Details
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="mt-4">
     <h3>Food List</h3>

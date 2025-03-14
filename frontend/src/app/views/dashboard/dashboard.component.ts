@@ -18,6 +18,7 @@ import { UserService } from '../../services/user.service';
 export class DashboardComponent implements OnInit {
   private foodList: Food[] = [];
   foodListFiltered: Food[] = [];
+  caloriesPerDay: { date: string; calories: number }[] = [];
   filterForm: FormGroup;
   addFoodForm: FormGroup;
 
@@ -26,9 +27,11 @@ export class DashboardComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService
   ) {
+    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
     this.filterForm = this.fb.group({
       from: ['', Validators.required],
-      to: ['', Validators.required],
+      to: [today, Validators.required],
     });
 
     this.addFoodForm = this.fb.group({
@@ -54,11 +57,29 @@ export class DashboardComponent implements OnInit {
     let to = new Date(this.filterForm.value.to).getTime();
     if (isNaN(to)) {
       //if not set, set to the end of the day
-      to = new Date(Date.now() + 24 * 60 * 60 * 1000).setUTCHours(0, 0, 0, 0);
+      to = new Date(Date.now()).setUTCHours(0, 0, 0, 0);
     }
+    //to always include the whole day
+    to += 24 * 60 * 60 * 1000;
     this.foodListFiltered = this.foodList.filter(
       (food) => food.timestamp >= from && food.timestamp <= to
     );
+    this.calculateCaloriesPerDay();
+  }
+
+  calculateCaloriesPerDay(): void {
+    const caloriesMap: { [date: string]: number } = {};
+    this.foodListFiltered.forEach((food) => {
+      const date = new Date(food.timestamp).toISOString().split('T')[0];
+      if (!caloriesMap[date]) {
+        caloriesMap[date] = 0;
+      }
+      caloriesMap[date] += food.calories;
+    });
+    this.caloriesPerDay = Object.keys(caloriesMap).map((date) => ({
+      date,
+      calories: caloriesMap[date],
+    }));
   }
 
   onFilterChange(): void {
@@ -79,5 +100,13 @@ export class DashboardComponent implements OnInit {
         this.addFoodForm.reset();
       });
     }
+  }
+
+  setDateFilterToDay(date: string): void {
+    this.filterForm.patchValue({
+      from: date,
+      to: date,
+    });
+    this.applyFilter();
   }
 }
