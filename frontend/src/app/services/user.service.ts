@@ -10,29 +10,29 @@ export class UserService {
   //SampleProject: fake data
   users: User[] = [
     {
-      id: '1',
+      id: 'user1',
       tokenEncoded: 'token_user1',
-      token: { id: '1', name: 'user1', role: 'user' },
+      token: { id: 'user1', name: 'user1', role: 'user' },
     },
     {
-      id: '2',
+      id: 'user2',
       tokenEncoded: 'token_user2',
-      token: { id: '2', name: 'user2', role: 'user' },
+      token: { id: 'user2', name: 'user2', role: 'user' },
     },
     {
-      id: '3',
+      id: 'user3',
       tokenEncoded: 'token_user3',
-      token: { id: '3', name: 'user3', role: 'user' },
+      token: { id: 'user3', name: 'user3', role: 'user' },
     },
     {
-      id: '4',
+      id: 'admin1',
       tokenEncoded: 'token_admin1',
-      token: { id: '1', name: 'admin1', role: 'admin' },
+      token: { id: 'admin1', name: 'admin1', role: 'admin' },
     },
     {
-      id: '5',
+      id: 'admin2',
       tokenEncoded: 'token_admin2',
-      token: { id: '2', name: 'admin2', role: 'admin' },
+      token: { id: 'admin2', name: 'admin2', role: 'admin' },
     },
   ];
 
