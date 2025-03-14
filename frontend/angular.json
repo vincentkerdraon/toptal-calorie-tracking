@@ -8,11 +8,7 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "inlineStyle": true,
-          "spec": false
-        },
-        "@schematics/angular:service": {
-          "spec": false
+          "inlineStyle": true
         }
       },
       "root": "",
