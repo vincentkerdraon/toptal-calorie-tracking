@@ -29,7 +29,6 @@ export class DashboardComponent implements OnInit {
   ) {
     this.foodService.loadUserData();
     const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-
     this.filterForm = this.fb.group({
       from: ['', Validators.required],
       to: [today, Validators.required],
@@ -81,10 +80,6 @@ export class DashboardComponent implements OnInit {
       date,
       calories: caloriesMap[date],
     }));
-  }
-
-  onFilterChange(): void {
-    this.applyFilter();
   }
 
   onAddFood(): void {
