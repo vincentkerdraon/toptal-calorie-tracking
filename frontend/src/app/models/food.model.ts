@@ -5,7 +5,7 @@ export type FoodId = string;
 export interface Food {
   id: FoodId;
   userId: UserId;
-  //UTC milliseconds
+  /** UTC milliseconds */
   timestamp: number;
   name: string;
   calories: number;
