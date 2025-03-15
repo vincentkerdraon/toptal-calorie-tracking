@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { User, UserId } from '../models/user.model';
 
 @Injectable({
@@ -7,7 +8,7 @@ import { User, UserId } from '../models/user.model';
 export class UserService {
   private currentUser: User | null = null;
 
-  //SampleProject: fake data
+  // SampleProject: fake data
   users: User[] = [
     {
       id: 'user1',
@@ -36,22 +37,21 @@ export class UserService {
     },
   ];
 
-  constructor() {
-    //FIXME save to local storage for reloads.
-    // for now, auto-connect
-    this.auth('1');
+  constructor(private router: Router) {
+    this.loadUserFromLocalStorage();
   }
 
   public getUsersId(): UserId[] {
     return this.users.map((u) => u.id);
   }
 
-  //SampleProject: this is a fake authenticate. In a real application, call the backend.
-  //or visit the app with already a token.
+  // SampleProject: this is a fake authenticate. In a real application, call the backend.
+  // or visit the app with already a token.
   auth(id: UserId): User | null {
     const user = this.users.find((u) => u.id === id);
     if (user) {
       this.currentUser = user;
+      this.saveUserToLocalStorage(user);
       return user;
     }
     return null;
@@ -59,9 +59,26 @@ export class UserService {
 
   logout() {
     this.currentUser = null;
+    this.removeUserFromLocalStorage();
+    this.router.navigate(['/login']);
   }
 
   getCurrentUser(): User | null {
     return this.currentUser;
+  }
+
+  private saveUserToLocalStorage(user: User): void {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+  }
+
+  private loadUserFromLocalStorage(): void {
+    const userJson = localStorage.getItem('currentUser');
+    if (userJson) {
+      this.currentUser = JSON.parse(userJson);
+    }
+  }
+
+  private removeUserFromLocalStorage(): void {
+    localStorage.removeItem('currentUser');
   }
 }

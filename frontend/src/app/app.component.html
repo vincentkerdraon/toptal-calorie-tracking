@@ -1,21 +1,40 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <a class="navbar-brand" href="#">Calory Sample Project</a>
-  <div>
-    <i>{{ userService.getCurrentUser()?.id }}</i>
-  </div>
-  <!-- FIXME <div class="collapse navbar-collapse"> -->
-  <div class="">
+
+  <div class="collapse navbar-collapse" *ngIf="!userService.getCurrentUser()">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a class="nav-link" routerLink="/login">Login</a>
       </li>
+    </ul>
+  </div>
+
+  <div
+    class="collapse navbar-collapse"
+    *ngIf="userService.getCurrentUser() as user"
+  >
+    <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" routerLink="/dashboard">Dashboard</a>
+        <a class="nav-link" routerLink="/dashboard">Personal Dashboard</a>
       </li>
-      <li class="nav-item">
+      <li *ngIf="user.token.role === 'admin'" class="nav-item">
         <a class="nav-link" routerLink="/admin/reporting">Admin Reporting</a>
       </li>
     </ul>
+
+    <div class="ml-auto d-flex align-items-center">
+      <div class="mr-3">
+        <i>{{ user.id }}</i
+        >: {{ user.token.name }}
+      </div>
+      <button
+        class="btn btn-outline-danger btn-sm"
+        (click)="userService.logout()"
+      >
+        Logout
+      </button>
+    </div>
   </div>
 </nav>
+
 <router-outlet></router-outlet>
