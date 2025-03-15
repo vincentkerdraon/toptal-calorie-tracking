@@ -72,6 +72,19 @@
 
   <div class="mt-4">
     <h3>Calories Per Day</h3>
+    <div class="form-group" *ngIf="user">
+      <label for="threshold">Threshold</label>
+      <input
+        type="number"
+        id="threshold"
+        [(ngModel)]="user.settings.caloryThreshold"
+        class="form-control"
+      />
+      <button class="btn btn-primary mt-2" (click)="updateThreshold()">
+        Update Threshold
+      </button>
+    </div>
+
     <table class="table table-striped">
       <thead>
         <tr>

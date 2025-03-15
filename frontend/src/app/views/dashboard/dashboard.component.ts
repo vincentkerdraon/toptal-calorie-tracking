@@ -3,16 +3,18 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
 import { Food } from '../../models/food.model';
+import { User } from '../../models/user.model';
 import { FoodService } from '../../services/food.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
@@ -21,6 +23,7 @@ export class DashboardComponent implements OnInit {
   caloriesPerDay: { date: string; calories: number }[] = [];
   filterForm: FormGroup;
   addFoodForm: FormGroup;
+  user: User | null = null;
 
   constructor(
     private foodService: FoodService,
@@ -47,6 +50,7 @@ export class DashboardComponent implements OnInit {
       this.foodList = foods;
       this.applyFilter();
     });
+    this.user = this.userService.getCurrentUser();
   }
 
   applyFilter(): void {
@@ -90,7 +94,7 @@ export class DashboardComponent implements OnInit {
         calories: this.addFoodForm.value.calories,
         cheating: this.addFoodForm.value.cheating,
         timestamp: this.addFoodForm.value.timestamp,
-        userId: this.userService.getCurrentUser()?.id || '',
+        userId: this.userService.getCurrentUser()?.tokenDecoded.id || '',
       };
       this.foodService.addFood(newFood).subscribe(() => {
         this.addFoodForm.reset();
@@ -105,4 +109,11 @@ export class DashboardComponent implements OnInit {
     });
     this.applyFilter();
   }
+
+  updateThreshold(): void {
+        if (this.user) {
+      this.userService.updateSettings(this.user.tokenDecoded.id, this.user.settings);
+    }
+  }
+
 }

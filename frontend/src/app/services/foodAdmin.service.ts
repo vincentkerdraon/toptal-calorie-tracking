@@ -27,12 +27,12 @@ export class FoodAdminService {
       this.adminData = undefined;
       throw new Error('User not found');
     }
-    if (user.token.role !== 'admin') {
+    if (user.tokenDecoded.role !== 'admin') {
       this.adminData = undefined;
       throw new Error('User is not an admin');
     }
     this.adminData = {
-      userId: user.id,
+      userId: user.tokenDecoded.id,
       food: [],
     };
   }

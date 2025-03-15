@@ -27,7 +27,7 @@ export class AdminGuard implements CanActivate {
 
   canActivate(): boolean {
     const user = this.userService.getCurrentUser();
-    if (user && user.token.role === 'admin') {
+    if (user && user.tokenDecoded.role === 'admin') {
       return true;
     } else {
       console.error('Admin access only');

@@ -26,11 +26,11 @@ export class FoodService {
     if (!user) {
       throw new Error('User not found');
     }
-    if (this.userData?.userId === user.id) {
+    if (this.userData?.userId === user.tokenDecoded.id) {
       return;
     }
     this.userData = {
-      userId: user.id,
+      userId: user.tokenDecoded.id,
       dateFilter: { from: 0, to: 0 },
       food: [],
     };

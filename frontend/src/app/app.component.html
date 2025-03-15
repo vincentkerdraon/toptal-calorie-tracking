@@ -17,15 +17,15 @@
       <li class="nav-item">
         <a class="nav-link" routerLink="/dashboard">Personal Dashboard</a>
       </li>
-      <li *ngIf="user.token.role === 'admin'" class="nav-item">
+      <li *ngIf="user.tokenDecoded.role === 'admin'" class="nav-item">
         <a class="nav-link" routerLink="/admin/reporting">Admin Reporting</a>
       </li>
     </ul>
 
     <div class="ml-auto d-flex align-items-center">
       <div class="mr-3">
-        <i>{{ user.id }}</i
-        >: {{ user.token.name }}
+        <i>{{ user.tokenDecoded.id }}</i
+        >: {{ user.tokenDecoded.name }}
       </div>
       <button
         class="btn btn-outline-danger btn-sm"
