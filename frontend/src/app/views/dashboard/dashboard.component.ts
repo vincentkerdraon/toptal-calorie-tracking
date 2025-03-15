@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService
   ) {
+    this.foodService.loadUserData();
     const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
 
     this.filterForm = this.fb.group({
@@ -89,12 +90,12 @@ export class DashboardComponent implements OnInit {
   onAddFood(): void {
     if (this.addFoodForm.valid) {
       const newFood: Food = {
+        id: '', //will be set by the backend
         name: this.addFoodForm.value.name,
         calories: this.addFoodForm.value.calories,
         cheating: this.addFoodForm.value.cheating,
-        //set by backend
-        userID: '',
-        timestamp: 0,
+        timestamp: this.addFoodForm.value.timestamp,
+        userId: this.userService.getCurrentUser()?.id || '',
       };
       this.foodService.addFood(newFood).subscribe(() => {
         this.addFoodForm.reset();

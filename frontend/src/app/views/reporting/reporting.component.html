@@ -1,3 +1,67 @@
-<p>reporting works!</p>
+<div class="container mt-5">
+  <h2>Reporting</h2>
 
-getCurrentUser: {{ userService.getCurrentUser() | json }}
+  <form [formGroup]="foodForm" (ngSubmit)="onSaveFood()">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="name">Food Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group col-md-3">
+        <label for="calories">Calories</label>
+        <input
+          type="number"
+          id="calories"
+          formControlName="calories"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group col-md-3">
+        <label for="timestamp">Date</label>
+        <input
+          type="date"
+          id="timestamp"
+          formControlName="timestamp"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group col-md-2">
+        <label for="cheating">Cheating</label>
+        <input
+          type="checkbox"
+          id="cheating"
+          formControlName="cheating"
+          class="form-control"
+        />
+      </div>
+      <div class="form-group col-md-1 align-self-end">
+        <button type="submit" class="btn btn-success">Save</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="mt-4">
+    <h3>Food List</h3>
+    <ul class="list-group">
+      <li class="list-group-item" *ngFor="let food of foodList">
+        {{ food.name }} - {{ food.calories }} calories -
+        {{ food.cheating ? "Cheating" : "Not Cheating" }} -
+        {{ food.timestamp | date : "shortDate" }}
+        <button
+          class="btn btn-primary btn-sm ml-2"
+          (click)="onSelectFood(food)"
+        >
+          Edit
+        </button>
+        <button class="btn btn-danger btn-sm ml-2" (click)="onDeleteFood(food)">
+          Delete
+        </button>
+      </li>
+    </ul>
+  </div>
+</div>

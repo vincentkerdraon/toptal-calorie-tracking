@@ -1,10 +1,10 @@
 import { Token, TokenEncoded } from './token.model';
 
 export type UserRole = 'admin' | 'user';
-export type ID = string;
+export type UserId = string;
 
 export interface User {
-  id: ID;
+  id: UserId;
   token: Token;
   tokenEncoded: TokenEncoded;
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ID } from '../../models/user.model';
+import { UserId } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { UserService } from '../../services/user.service';
   styles: [],
 })
 export class LoginComponent {
-  users: ID[];
+  users: UserId[];
   constructor(private router: Router, private userService: UserService) {
     this.users = this.userService.getUsersId();
   }

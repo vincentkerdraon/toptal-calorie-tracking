@@ -2,12 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import { DateFilter, Food } from '../models/food.model';
-import { ID } from '../models/user.model';
+import { DateFilter, Food, validateFood } from '../models/food.model';
+import { UserId } from '../models/user.model';
 import { UserService } from './user.service';
 
 interface UserData {
-  userId: ID;
+  userId: UserId;
   dateFilter: DateFilter;
   food: Food[];
 }
@@ -21,10 +21,13 @@ export class FoodService {
 
   constructor(private http: HttpClient, private userService: UserService) {}
 
-  private loadUserData() {
+  public loadUserData() {
     const user = this.userService.getCurrentUser();
     if (!user) {
       throw new Error('User not found');
+    }
+    if (this.userData?.userId === user.id) {
+      return;
     }
     this.userData = {
       userId: user.id,
@@ -40,9 +43,6 @@ export class FoodService {
 
   setDateFilter(dateFilter: DateFilter) {
     if (!this.userData) {
-      this.loadUserData();
-    }
-    if (!this.userData) {
       throw new Error('fail loading user data');
     } else {
       this.userData.dateFilter = dateFilter;
@@ -50,10 +50,9 @@ export class FoodService {
   }
 
   addFood(food: Food): Observable<Food> {
-    if (!food.name || food.calories <= 0) {
+    if (!validateFood(food)) {
       throw new Error('Invalid food data');
     }
-
     return this.addFoodMock(food);
   }
 
@@ -104,21 +103,24 @@ export class FoodService {
     }
     const mockFoods: Food[] = [
       {
-        userID: this.userData.userId,
+        id: 'food1',
+        userId: this.userData.userId,
         timestamp: Date.now(),
         name: 'Apple',
         calories: 95,
         cheating: false,
       },
       {
-        userID: this.userData.userId,
+        id: 'food2',
+        userId: this.userData.userId,
         timestamp: Date.now(),
         name: 'Banana',
         calories: 105,
         cheating: false,
       },
       {
-        userID: this.userData.userId,
+        id: 'food3',
+        userId: this.userData.userId,
         timestamp: 100,
         name: 'Chocolate',
         calories: 250,
@@ -138,7 +140,7 @@ export class FoodService {
 
   getFood(): Observable<Food[]> {
     if (!this.userData) {
-      this.loadUserData();
+      throw new Error('User not connected');
     }
     if (this.userData && this.userData.food.length === 0) {
       this.fetchFood().subscribe();

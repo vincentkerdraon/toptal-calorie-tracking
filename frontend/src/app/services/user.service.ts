@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ID, User } from '../models/user.model';
+import { User, UserId } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -42,13 +42,13 @@ export class UserService {
     this.auth('1');
   }
 
-  public getUsersId(): ID[] {
+  public getUsersId(): UserId[] {
     return this.users.map((u) => u.id);
   }
 
   //SampleProject: this is a fake authenticate. In a real application, call the backend.
   //or visit the app with already a token.
-  auth(id: ID): User | null {
+  auth(id: UserId): User | null {
     const user = this.users.find((u) => u.id === id);
     if (user) {
       this.currentUser = user;
