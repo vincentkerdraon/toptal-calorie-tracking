@@ -1,6 +1,7 @@
 package persist
 
 import (
+	"sort"
 	"sync"
 
 	"topal.com/calorysampleproject/lib/food"
@@ -41,6 +42,9 @@ func (im *implMemory) GetAll() ([]food.Food, error) {
 	for _, f := range im.foods {
 		result = append(result, f)
 	}
+	//not necessary, but easier to test and debug
+	sort.Slice(result, func(i, j int) bool { return result[i].ID < result[j].ID })
+
 	return result, nil
 }
 

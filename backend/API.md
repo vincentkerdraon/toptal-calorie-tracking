@@ -48,18 +48,8 @@ curl -X POST http://127.0.0.1:8080/api/foods \
 **Description:** Retrieves a list of all food entries for a given user.  
 **Headers:**  
 `Authorization: Bearer <token>`  
-**Request Body:**
-```json
-{
-    "userIDs": ["id1", "id2"]
-}
-```
-or for all users
-```json
-{
-    "userIDs": null
-}
-```
+**Parameters:**
+userIDs=user1,user2
 **Response Codes:** 200, 400, 403, 5XX  
 **Response Body:**
 ```json
@@ -77,21 +67,14 @@ or for all users
 
 **Example cURL command to test**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/foods \
--H "Authorization: Bearer token_user1" \
--H "Content-Type: application/json" \
--d '{
-    "userIDs": ["user1"]
-}'
+curl -X GET http://127.0.0.1:8080/api/foods?userIDs=user1 \
+-H "Authorization: Bearer token_user1"
 ```
 or for all users
 ```sh
 curl -X GET http://127.0.0.1:8080/api/foods \
 -H "Authorization: Bearer token_admin1" \
--H "Content-Type: application/json" \
--d '{
-    "userIDs": null
-}'
+-H "Content-Type: application/json"
 ```
 
 ### Update a food entry

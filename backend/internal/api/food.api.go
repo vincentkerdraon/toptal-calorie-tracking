@@ -1,15 +1,18 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
 	"topal.com/calorysampleproject/internal/business"
 	"topal.com/calorysampleproject/lib/food"
 	"topal.com/calorysampleproject/lib/token"
+	"topal.com/calorysampleproject/lib/user"
 )
 
 func HandleFood(w http.ResponseWriter, r *http.Request, tokenDecoder token.Decoder, bus business.Business) {
@@ -53,11 +56,13 @@ func HandleFood(w http.ResponseWriter, r *http.Request, tokenDecoder token.Decod
 		return
 	}
 
+	w.WriteHeader(code)
 	if res != nil {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(code)
 		err = json.NewEncoder(w).Encode(res)
 		if err != nil {
+			//not a user error, important to report and fix
+			fmt.Printf("fail JSON encode answer: %s %s %+v, %+v%s\n", r.Method, r.URL.Path, *tokenDecoded, res, err)
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -81,24 +86,35 @@ func handleList(r *http.Request, bus business.Business, tokenDecoded token.Token
 		return http.StatusBadRequest, nil, nil
 	}
 
-	in := food.GetInput{}
-	err := json.NewDecoder(r.Body).Decode(&in)
-	if err != nil {
+	query := r.URL.Query()
+	userIDsS := query["userIDs"]
+	if len(userIDsS) == 0 {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	res, err := bus.Get(in.UserIDs, tokenDecoded)
+	var userIDs []user.ID
+	for _, id := range userIDsS {
+		userIDs = append(userIDs, user.ID(id))
+	}
+	res, err := bus.Get(userIDs, tokenDecoded)
 	return http.StatusOK, res, err
 }
 
 func handleUpdate(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, interface{}, error) {
-	if r.URL.Path != food.BaseAPI {
+	if !strings.HasPrefix(r.URL.Path+"/", food.BaseAPI) {
+		return http.StatusBadRequest, nil, nil
+	}
+	id := r.URL.Path[len(food.BaseAPI+"/"):]
+	if id == "" {
 		return http.StatusBadRequest, nil, nil
 	}
 
 	var newFood food.Food
 	err := json.NewDecoder(r.Body).Decode(&newFood)
 	if err != nil {
+		return http.StatusBadRequest, nil, nil
+	}
+	if newFood.ID != food.ID(id) {
 		return http.StatusBadRequest, nil, nil
 	}
 
@@ -111,12 +127,19 @@ func handleAdd(r *http.Request, bus business.Business, tokenDecoded token.Token)
 		return http.StatusBadRequest, nil, nil
 	}
 
-	var newFood food.Food
-	err := json.NewDecoder(r.Body).Decode(&newFood)
+	bodyBytes, err := io.ReadAll(r.Body)
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+	fmt.Printf("Request Body: %s\n", string(bodyBytes))
+	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+
+	var newFood = &food.Food{}
+	err = json.NewDecoder(r.Body).Decode(newFood)
 	if err != nil {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	res, err := bus.Add(newFood, tokenDecoded)
+	res, err := bus.Add(*newFood, tokenDecoded)
 	return http.StatusCreated, res, err
 }

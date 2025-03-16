@@ -86,7 +86,7 @@ func (b *impl) Delete(id food.ID, t token.Token) error {
 			return &token.UnauthorizedError{}
 		}
 	}
-	//if admin and non existant, also no error expected.
+	//if admin and non existent, also no error expected.
 
 	return b.persist.Delete(id)
 }

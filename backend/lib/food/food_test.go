@@ -17,7 +17,7 @@ func TestFood_UnmarshalJSON(t *testing.T) {
 
 }
 func TestFood_MarshalJSON(t *testing.T) {
-	f := Food{
+	f := &Food{
 		ID:        "23",
 		Timestamp: time.Unix(10000000, 0),
 		Name:      "Banana",
@@ -26,7 +26,7 @@ func TestFood_MarshalJSON(t *testing.T) {
 		UserID:    "user1",
 	}
 
-	jsonData, err := f.MarshalJSON()
+	jsonData, err := json.Marshal(f)
 	if err != nil {
 		t.Fatalf("Failed to marshal JSON: %v", err)
 	}
