@@ -1,15 +1,18 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 import { DateFilter, Food, validateFood } from '../models/food.model';
+import { TokenEncoded } from '../models/token.model';
 import { UserId } from '../models/user.model';
 import { UserService } from './user.service';
 
 interface UserData {
   userId: UserId;
+  tokenEncoded: TokenEncoded;
   dateFilter: DateFilter;
-  food: Food[];
+  foods: Food[];
 }
 
 @Injectable({
@@ -31,8 +34,9 @@ export class FoodService {
     }
     this.userData = {
       userId: user.tokenDecoded.id,
+      tokenEncoded:user.tokenEncoded,
       dateFilter: { from: 0, to: 0 },
-      food: [],
+      foods: [],
     };
   }
 
@@ -49,89 +53,48 @@ export class FoodService {
     }
   }
 
-  addFood(food: Food): Observable<Food> {
-    if (!validateFood(food)) {
-      throw new Error('Invalid food data');
-    }
-    return this.addFoodMock(food);
+  addFood(food: Food): Observable<Food> { 
+    validateFood(food);
+    return this.addFoodServer(food);
   }
 
   private addFoodServer(food: Food): Observable<Food> {
-    return this.http.post<Food>('/api/food', food).pipe(
+    if (!this.userData) {
+      throw new Error('User not connected');
+    }
+    const headers = { 'Authorization': `Bearer ${this.userData.tokenEncoded}` };
+    return this.http.post<Food>(environment.backend+'/api/foods', food, { headers }).pipe(
       tap((newFood: Food) => {
-        if (this.userData) {
-          this.userData.food.push(newFood);
-          this.foodSubject.next(this.userData.food);
-        }
+      if (this.userData) {
+        this.userData.foods.push(newFood);
+        this.foodSubject.next(this.userData.foods);
+      }
       }),
       catchError(this.handleError<Food>('addFoodServer'))
     );
   }
 
-  private addFoodMock(food: Food): Observable<Food> {
-    return of(food).pipe(
-      tap((newFood: Food) => {
-        if (this.userData) {
-          this.userData.food.push(newFood);
-          this.foodSubject.next(this.userData.food);
-        }
-      }),
-      catchError(this.handleError<Food>('addFoodMock'))
-    );
-  }
-
-  // private fetchFood(): Observable<Food[]> {
-  //   if (!this.userData) {
-  //     throw new Error('User not connected');
-  //   }
-  //   const currentUserId = this.userData.userId;
-  //   return this.http.get<Food[]>('/api/food').pipe(
-  //     tap((foods: Food[]) => {
-  //       if (this.userData && this.userData.userId === currentUserId) {
-  //         this.userData.food = foods;
-  //         this.foodSubject.next(foods);
-  //       }
-  //     }),
-  //     catchError(this.handleError<Food[]>('fetchFood', []))
-  //   );
-  // }
-
-  //Mock data not connected to the backend
   private fetchFood(): Observable<Food[]> {
     if (!this.userData) {
       throw new Error('User not connected');
     }
-    const mockFoods: Food[] = [
-      {
-        id: 'food1',
-        userId: this.userData.userId,
-        timestamp: Date.now(),
-        name: 'Apple',
-        calories: 95,
-        cheating: false,
+    let params = new HttpParams();
+    params = params.append('userIDs', this.userData.userId);
+    const headers =  {
+      headers: {
+        'Authorization': `Bearer ${this.userData.tokenEncoded}`,
+        'Content-Type': 'application/json'
       },
-      {
-        id: 'food2',
-        userId: this.userData.userId,
-        timestamp: Date.now(),
-        name: 'Banana',
-        calories: 105,
-        cheating: false,
-      },
-      {
-        id: 'food3',
-        userId: this.userData.userId,
-        timestamp: 100,
-        name: 'Chocolate',
-        calories: 250,
-        cheating: true,
-      },
-    ];
-    return of(mockFoods).pipe(
+      params: params
+    }
+    return this.http.get<Food[]>(environment.backend+'/api/foods',headers   ).pipe(
       tap((foods: Food[]) => {
-        if (this.userData) {
-          this.userData.food = foods;
-          this.foodSubject.next(foods);
+        if (foods==null){
+            foods = []; 
+        }
+        if (this.userData && this.userData.userId === this.userData.userId) {
+          this.userData.foods = foods;
+          this.foodSubject.next(foods); 
         }
       }),
       catchError(this.handleError<Food[]>('fetchFood', []))
@@ -142,7 +105,7 @@ export class FoodService {
     if (!this.userData) {
       throw new Error('User not connected');
     }
-    if (this.userData && this.userData.food.length === 0) {
+    if (this.userData && this.userData.foods.length === 0) {
       this.fetchFood().subscribe();
     }
     return this.foodSubject.asObservable();

@@ -12,14 +12,22 @@ export interface Food {
   cheating: boolean;
 }
 
-export function validateFood(food: Food): boolean {
-  return (
-    food.name.length > 0 &&
-    food.calories > 0 &&
-    food.timestamp > 0 &&
-    food.userId.length > 0 &&
-    typeof food.cheating === 'boolean'
-  );
+export function validateFood(food: Food): void {
+  if (food.name.length === 0) {
+    throw new Error('Food name must not be empty');
+  }
+  if (food.calories <= 0) {
+    throw new Error('Calories must be greater than 0');
+  }
+  if (food.timestamp <= 0) {
+    throw new Error('Timestamp must be a positive number');
+  }
+  if (food.userId.length === 0) {
+    throw new Error('User ID must not be empty');
+  }
+  if (typeof food.cheating !== 'boolean') {
+    throw new Error('Cheating must be a boolean');
+  }
 }
 
 export interface DateFilter {

@@ -43,16 +43,12 @@ export class FoodAdminService {
   }
 
   addFood(food: Food): Observable<Food> {
-    if (!validateFood(food)) {
-      throw new Error('Invalid food data');
-    }
+    validateFood(food);
     return this.useMock ? this.addFoodMock(food) : this.addFoodServer(food);
   }
 
   updateFood(food: Food): Observable<Food> {
-    if (!validateFood(food)) {
-      throw new Error('Invalid food data');
-    }
+    validateFood(food);
     return this.useMock
       ? this.updateFoodMock(food)
       : this.updateFoodServer(food);

@@ -40,7 +40,7 @@ export class DashboardComponent implements OnInit {
     this.addFoodForm = this.fb.group({
       name: ['', Validators.required],
       calories: ['', [Validators.required, Validators.min(1)]],
-      timestamp: ['', Validators.required],
+      date: ['', Validators.required],
       cheating: [false],
     });
   }
@@ -88,14 +88,16 @@ export class DashboardComponent implements OnInit {
 
   onAddFood(): void {
     if (this.addFoodForm.valid) {
+      let date=new Date(this.addFoodForm.value.date)
       const newFood: Food = {
         id: '', //will be set by the backend
         name: this.addFoodForm.value.name,
         calories: this.addFoodForm.value.calories,
         cheating: this.addFoodForm.value.cheating,
-        timestamp: this.addFoodForm.value.timestamp,
+        timestamp: date.getTime(), //FIXME UTC
         userId: this.userService.getCurrentUser()?.tokenDecoded.id || '',
       };
+
       this.foodService.addFood(newFood).subscribe(() => {
         this.addFoodForm.reset();
       });

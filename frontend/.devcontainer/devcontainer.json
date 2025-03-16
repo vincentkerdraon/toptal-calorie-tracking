@@ -2,7 +2,8 @@
     "name": "Angular DevContainer",
     "image": "mcr.microsoft.com/vscode/devcontainers/javascript-node:latest",
     "runArgs": [
-        "--init"
+        "--init",
+        "--network=devcontainer-network"
     ],
     "customizations": {
         "vscode": {
