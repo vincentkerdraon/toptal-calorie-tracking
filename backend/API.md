@@ -29,6 +29,20 @@ Same food object with an id.
 }
 ```
 
+**Example cURL command to test**
+```sh
+curl -X POST http://127.0.0.1:8080/api/foods \
+-H "Authorization: Bearer token_user1" \
+-H "Content-Type: application/json" \
+-d '{
+    "timestamp": 1678901234567,
+    "name": "Banana",
+    "calories": 105,
+    "cheating": false,
+    "userId": "user1"
+}'
+```
+
 ### Get all food entries
 **Endpoint:** `GET /api/foods`  
 **Description:** Retrieves a list of all food entries for a given user.  
@@ -61,6 +75,25 @@ or for all users
 }
 ```
 
+**Example cURL command to test**
+```sh
+curl -X GET http://127.0.0.1:8080/api/foods \
+-H "Authorization: Bearer token_user1" \
+-H "Content-Type: application/json" \
+-d '{
+    "userIDs": ["user1"]
+}'
+```
+or for all users
+```sh
+curl -X GET http://127.0.0.1:8080/api/foods \
+-H "Authorization: Bearer token_admin1" \
+-H "Content-Type: application/json" \
+-d '{
+    "userIDs": null
+}'
+```
+
 ### Update a food entry
 **Endpoint:** `PUT /api/foods/{id}`  
 **Description:** Updates an existing food entry.  
@@ -90,8 +123,29 @@ or for all users
 }
 ```
 
+**Example cURL command to test**
+```sh
+curl -X PUT http://127.0.0.1:8080/api/foods/id1 \
+-H "Authorization: Bearer token_user1" \
+-H "Content-Type: application/json" \
+-d '{
+    "id": "id1",
+    "timestamp": 1678901234567,
+    "name": "Banana",
+    "calories": 105,
+    "cheating": false,
+    "userId": "user1"
+}'
+```
+
 ### Delete a food entry
 **Endpoint:** `DELETE /api/foods/{id}`  
 **Description:** Deletes an existing food entry.  
 **Headers:**  
 `Authorization: Bearer <token>`
+
+**Example cURL command to test**
+```sh
+curl -X DELETE http://127.0.0.1:8080/api/foods/id1 \
+-H "Authorization: Bearer token_user1"
+```
