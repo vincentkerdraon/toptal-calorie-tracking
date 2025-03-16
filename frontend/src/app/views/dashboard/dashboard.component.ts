@@ -9,12 +9,13 @@ import {
 } from '@angular/forms';
 import { Food } from '../../models/food.model';
 import { User } from '../../models/user.model';
+import { LocaleDatePipe } from '../../pipes/locale-date.pipe';
 import { FoodService } from '../../services/food.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule,LocaleDatePipe],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
@@ -31,16 +32,22 @@ export class DashboardComponent implements OnInit {
     private userService: UserService
   ) {
     this.foodService.loadUserData();
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+
+    //default date for forms
+    const today = new Date().toISOString().split('T')[0]; 
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+    const twoWeeksAgoDate = twoWeeksAgo.toISOString().split('T')[0];
+
     this.filterForm = this.fb.group({
-      from: ['', Validators.required],
+      from: [twoWeeksAgoDate, Validators.required],
       to: [today, Validators.required],
     });
 
     this.addFoodForm = this.fb.group({
       name: ['', Validators.required],
       calories: ['', [Validators.required, Validators.min(1)]],
-      date: ['', Validators.required],
+      date: [today, Validators.required],
       cheating: [false],
     });
   }
@@ -80,20 +87,26 @@ export class DashboardComponent implements OnInit {
       }
       caloriesMap[date] += food.calories;
     });
-    this.caloriesPerDay = Object.keys(caloriesMap).map((date) => ({
-      date,
-      calories: caloriesMap[date],
-    }));
+    this.caloriesPerDay = Object.keys(caloriesMap)
+      .map((date) => ({
+        date,
+        calories: caloriesMap[date],
+      }))
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
   }
 
   onAddFood(): void {
     if (this.addFoodForm.valid) {
       let date=new Date(this.addFoodForm.value.date)
+      let cheating=this.addFoodForm.value.cheating
+      if (cheating==null){
+        cheating=false
+      }
       const newFood: Food = {
         id: '', //will be set by the backend
         name: this.addFoodForm.value.name,
         calories: this.addFoodForm.value.calories,
-        cheating: this.addFoodForm.value.cheating,
+        cheating: cheating,
         timestamp: date.getTime(), //FIXME UTC
         userId: this.userService.getCurrentUser()?.tokenDecoded.id || '',
       };
