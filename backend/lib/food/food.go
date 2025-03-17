@@ -68,4 +68,4 @@ type GetInput struct {
 	UserIDs []user.ID `json:"userIDs"`
 }
 
-const BaseAPI = "/api/foods"
+const BaseAPI = "/api/foods/"

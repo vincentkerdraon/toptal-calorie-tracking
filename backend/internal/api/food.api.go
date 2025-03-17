@@ -86,14 +86,9 @@ func handleList(r *http.Request, bus business.Business, tokenDecoded token.Token
 		return http.StatusBadRequest, nil, nil
 	}
 
-	query := r.URL.Query()
-	userIDsS := query["userIDs"]
-	if len(userIDsS) == 0 {
-		return http.StatusBadRequest, nil, nil
-	}
-
 	var userIDs []user.ID
-	for _, id := range userIDsS {
+	query := r.URL.Query()
+	for _, id := range query["userIDs"] {
 		userIDs = append(userIDs, user.ID(id))
 	}
 	res, err := bus.Get(userIDs, tokenDecoded)
