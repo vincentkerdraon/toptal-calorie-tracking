@@ -47,7 +47,16 @@ export class FoodAdminService {
 
   addFood(food: Food): Observable<Food> {
     validateFood(food);
-    return this.http.post<Food>(environment.backend + foodApi, food).pipe(
+    if (!this.adminData) {
+      throw new Error('User not connected');
+    }
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${this.adminData.tokenEncoded}`,
+        'Content-Type': 'application/json',
+      },
+    };
+    return this.http.post<Food>(environment.backend + foodApi, food ,headers).pipe(
       tap((newFood: Food) => {
         if (this.adminData) {
           this.adminData.food.push(newFood);
@@ -59,33 +68,46 @@ export class FoodAdminService {
   }
 
   updateFood(food: Food): Observable<Food> {
-    validateFood(food);
+    validateFood(food);    
+    if (!this.adminData) {
+      throw new Error('User not connected');
+    }
+    const headers = {
+      headers: {
+        Authorization: `Bearer ${this.adminData.tokenEncoded}`,
+        'Content-Type': 'application/json',
+      },
+    };
     return this.http
-      .put<Food>(environment.backend + foodApi + food.userId, food)
+      .put<Food>(environment.backend + foodApi +"/"+ food.id, food,headers)
       .pipe(
         tap((updatedFood: Food) => {
           if (this.adminData) {
             const index = this.adminData.food.findIndex(
-              (f) => f.userId === food.userId
+              (f) => f.id === food.id
             );
             if (index !== -1) {
               this.adminData.food[index] = updatedFood;
               this.foodSubject.next(this.adminData.food);
             }
           }
-        }),
+        }), 
         catchError(this.handleError<Food>('updateFoodServer'))
-      );
+      ); 
   }
 
   deleteFood(food: Food): Observable<void> {
+    if (!this.adminData) {
+      throw new Error('User not connected');
+    }
+    const headers = { Authorization: `Bearer ${this.adminData.tokenEncoded}` };
     return this.http
-      .delete<void>(environment.backend + foodApi + food.userId)
+      .delete<void>(environment.backend + foodApi +"/"+ food.id,{headers})
       .pipe(
         tap(() => {
           if (this.adminData) {
             this.adminData.food = this.adminData.food.filter(
-              (f) => f.userId !== food.userId
+              (f) => f.id !== food.id
             );
             this.foodSubject.next(this.adminData.food);
           }

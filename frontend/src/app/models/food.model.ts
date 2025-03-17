@@ -2,7 +2,7 @@ import { UserId } from './user.model';
 
 export type FoodId = string;
 
-export const foodApi = '/api/foods/';
+export const foodApi = '/api/foods';
 
 export interface Food {
   id: FoodId;

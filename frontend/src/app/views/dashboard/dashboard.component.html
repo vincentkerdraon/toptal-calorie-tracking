@@ -7,7 +7,8 @@
       <form [formGroup]="foodForm" (ngSubmit)="onAddFood()">
         <div class="input-group">
           <span class="input-group-text" for="name">Food Name</span>
-          <input type="text" id="name" formControlName="name" class="form-control" placeholder="Banana" />
+          <input type="text" id="name" formControlName="name" class="form-control"
+            placeholder="milk, banana, hamburger" />
         </div>
         <div class="input-group">
           <span class="input-group-text" for="calories">Calories</span>
@@ -74,11 +75,9 @@
       <tbody>
         <tr *ngFor="let entry of caloriesPerDay">
           <td>{{ entry.date | date:'dd/MM/yyyy' }}</td>
-          <td>
-            <div class=""
-              [ngClass]="{'text-danger': entry.calories > user.settings.caloryThreshold, 'text-success': entry.calories <= user.settings.caloryThreshold}">
-              {{ entry.calories }}
-            </div>
+          <td class=""
+            [ngClass]="{'text-danger': entry.calories > user.settings.caloryThreshold, 'text-success': entry.calories <= user.settings.caloryThreshold}">
+            {{ entry.calories }}
           </td>
           <td>
             <button class="btn btn-secondary" (click)="setDateFilterToDay(entry.date)">

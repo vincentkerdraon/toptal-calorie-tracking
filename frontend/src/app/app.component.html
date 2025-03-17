@@ -9,10 +9,7 @@
     </ul>
   </div>
 
-  <div
-    class="collapse navbar-collapse"
-    *ngIf="userService.getCurrentUser() as user"
-  >
+  <div class="collapse navbar-collapse" *ngIf="userService.getCurrentUser() as user">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a class="nav-link" routerLink="/dashboard">Personal Dashboard</a>
@@ -24,13 +21,9 @@
 
     <div class="ml-auto d-flex align-items-center">
       <div class="mr-3">
-        <i>{{ user.tokenDecoded.id }}</i
-        >: {{ user.tokenDecoded.name }}
+        <i>{{ user.tokenDecoded.id }}</i>
       </div>
-      <button
-        class="btn btn-outline-danger btn-sm"
-        (click)="userService.logout()"
-      >
+      <button class="btn btn-outline-danger btn-sm" (click)="userService.logout()">
         Logout
       </button>
     </div>

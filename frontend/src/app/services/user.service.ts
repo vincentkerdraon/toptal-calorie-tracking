@@ -13,28 +13,28 @@ export class UserService {
     //FIXME better test data
     {
       tokenEncoded: 'token_user1',
-      tokenDecoded: { id: 'user1', name: 'user1', role: 'user' },
-      settings: { caloryThreshold: 2000 },
+      tokenDecoded: { id: 'user1', role: 'user' },
+      settings: { caloryThreshold: 2100 },
     },
     {
       tokenEncoded: 'token_user2',
-      tokenDecoded: { id: 'user2', name: 'user2', role: 'user' },
+      tokenDecoded: { id: 'user2',  role: 'user' },
       settings: { caloryThreshold: 2300 },
     },
     {
       tokenEncoded: 'token_user3',
-      tokenDecoded: { id: 'user3', name: 'user3', role: 'user' },
-      settings: { caloryThreshold: 2000 },
+      tokenDecoded: { id: 'user3',  role: 'user' },
+      settings: { caloryThreshold: 2100 },
     },
     {
       tokenEncoded: 'token_admin1',
-      tokenDecoded: { id: 'admin1', name: 'admin1', role: 'admin' },
-      settings: { caloryThreshold: 2000 },
+      tokenDecoded: { id: 'admin1',  role: 'admin' },
+      settings: { caloryThreshold: 2100 },
     },
     {
       tokenEncoded: 'token_admin2',
-      tokenDecoded: { id: 'admin2', name: 'admin2', role: 'admin' },
-      settings: { caloryThreshold: 2000 },
+      tokenDecoded: { id: 'admin2',  role: 'admin' },
+      settings: { caloryThreshold: 2100 },
     },
   ];
 
@@ -91,5 +91,13 @@ export class UserService {
     //FIXME send to backend to persist
     user.settings = settings;
     this.saveUserToLocalStorage(user);
+  }
+
+  public getUserSettings(userId:UserId) :UserSettings|null{
+    const user = this.users.find((u) => u.tokenDecoded.id === userId);
+    if (!user) {
+      return null
+    }
+    return user.settings
   }
 }

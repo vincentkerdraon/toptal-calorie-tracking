@@ -28,6 +28,7 @@ export class ReportingComponent implements OnInit {
     userId: string;
     date: string;
     calories: number;
+    threshold?: number;
   }[] = [];
   userFollowUp: {
     userId: string;
@@ -38,7 +39,7 @@ export class ReportingComponent implements OnInit {
   constructor(
     private foodAdminService: FoodAdminService,
     private fb: FormBuilder,
-    private userService: UserService
+    public userService: UserService
   ) {
     this.foodAdminService.loadAdminData();
 
@@ -81,9 +82,17 @@ export class ReportingComponent implements OnInit {
     }
     //to always include the whole day
     to += 24 * 60 * 60 * 1000;
-    this.foodListFiltered = this.foodList.filter(
-      (food) => food.timestamp >= from && food.timestamp <= to
-    );
+    this.foodListFiltered = this.foodList
+      .filter((food) => food.timestamp >= from && food.timestamp <= to)
+      .sort((a, b) => {
+      if (a.userId === b.userId) {
+        if (b.timestamp == a.timestamp){
+          return b.calories-a.calories
+        }
+        return b.timestamp - a.timestamp;
+      }
+      return a.userId.localeCompare(b.userId);
+      });
     this.calculateCaloriesPerDayPerUser();
   }
 
@@ -161,20 +170,15 @@ export class ReportingComponent implements OnInit {
         if (existingEntry) {
           existingEntry.calories += food.calories;
         } else {
+
           this.caloriesPerDayPerUser.push({
             userId,
             date,
             calories: food.calories,
+            threshold: this.userService.getUserSettings(food.userId)?.caloryThreshold
           });
         }
       });
-
-    this.caloriesPerDayPerUser.sort((a, b) => {
-      if (a.userId === b.userId) {
-        return a.date.localeCompare(b.date);
-      }
-      return a.userId.localeCompare(b.userId);
-    });
   }
 
   onSelectFood(food: Food): void {
@@ -183,47 +187,50 @@ export class ReportingComponent implements OnInit {
       userId: food.userId,
       name: food.name,
       calories: food.calories,
-      timestamp: new Date(food.timestamp).toISOString().split('T')[0],
+      date: new Date(food.timestamp).toISOString().split('T')[0],
       cheating: food.cheating,
     });
   }
 
   onSaveFood(): void {
-    if (this.foodForm.valid) {
-      const foodData: Food = {
-        id: this.selectedFood?.id || '',
-        userId: this.foodForm.value.userId,
-        name: this.foodForm.value.name,
-        calories: this.foodForm.value.calories,
-        timestamp: new Date(this.foodForm.value.timestamp).getTime(),
-        cheating: this.foodForm.value.cheating,
-      };
+    if (!this.foodForm.valid) {
+      return
+    }
+    let cheating = this.foodForm.value.cheating;
+    if (cheating == null) {
+      cheating = false;
+    }
+    const foodData: Food = {
+      id: this.selectedFood?.id || '',
+      userId: this.foodForm.value.userId,
+      name: this.foodForm.value.name,
+      calories: this.foodForm.value.calories,
+      timestamp: new Date(this.foodForm.value.date).getTime(),
+      cheating: cheating,
+    };
 
-      if (this.selectedFood) {
-        // Update existing food
-        this.foodAdminService.updateFood(foodData).subscribe(() => {
-          this.loadFood();
-          this.selectedFood = null;
-          this.foodForm.reset();
-        });
-      } else {
-        // Create new food
-        this.foodAdminService.addFood(foodData).subscribe(() => {
-          this.loadFood();
-          this.foodForm.reset();
-        });
-      }
+    if (this.selectedFood) {
+      // Update existing food
+      this.foodAdminService.updateFood(foodData).subscribe(() => {
+        this.calculateStatistics();
+        this.applyFilter();
+        this.selectedFood = null;
+        this.foodForm.reset();
+      });
+    } else {
+      // Create new food
+      this.foodAdminService.addFood(foodData).subscribe(() => {
+        this.calculateStatistics();
+        this.applyFilter();
+        this.foodForm.reset();
+      });
     }
   }
 
   onDeleteFood(food: Food): void {
     this.foodAdminService.deleteFood(food).subscribe(() => {
-      this.loadFood();
+      this.calculateStatistics();
+      this.applyFilter();
     });
-  }
-
-  onClearSelection(): void {
-    this.selectedFood = null;
-    this.foodForm.reset();
   }
 }
