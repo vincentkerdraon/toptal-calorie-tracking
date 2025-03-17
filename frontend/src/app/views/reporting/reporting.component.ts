@@ -7,13 +7,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { Food } from '../../models/food.model';
-import { LocaleDatePipe } from '../../pipes/locale-date.pipe';
 import { FoodAdminService } from '../../services/foodAdmin.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-reporting',
-  imports: [ReactiveFormsModule, CommonModule, LocaleDatePipe],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './reporting.component.html',
 })
 export class ReportingComponent implements OnInit {

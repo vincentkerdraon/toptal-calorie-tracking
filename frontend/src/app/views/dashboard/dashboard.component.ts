@@ -9,13 +9,13 @@ import {
 } from '@angular/forms';
 import { Food } from '../../models/food.model';
 import { User } from '../../models/user.model';
-import { LocaleDatePipe } from '../../pipes/locale-date.pipe';
 import { FoodService } from '../../services/food.service';
 import { UserService } from '../../services/user.service';
 
+
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule, LocaleDatePipe],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
@@ -37,10 +37,10 @@ export class DashboardComponent implements OnInit {
     const today = new Date().toISOString().split('T')[0];
     const twoWeeksAgo = new Date();
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
-    const twoWeeksAgoDate = twoWeeksAgo.toISOString().split('T')[0];
+    const twoWeeksAgoS = twoWeeksAgo.toISOString().split('T')[0];
 
     this.filterForm = this.fb.group({
-      from: [twoWeeksAgoDate, Validators.required],
+      from: [twoWeeksAgoS, Validators.required],
       to: [today, Validators.required],
     });
 
@@ -67,10 +67,9 @@ export class DashboardComponent implements OnInit {
     }
     let to = new Date(this.filterForm.value.to).getTime();
     if (isNaN(to)) {
-      //if not set, set to the end of the day
-      to = new Date(Date.now()).setUTCHours(0, 0, 0, 0);
+      to = Date.now();
     }
-    //to always include the whole day
+    //date_to always includes the whole day
     to += 24 * 60 * 60 * 1000;
     this.foodListFiltered = this.foodList
       .filter((f) => f.timestamp >= from && f.timestamp <= to)
@@ -80,7 +79,7 @@ export class DashboardComponent implements OnInit {
   }
 
   calculateCaloriesPerDay(): void {
-    //FIXNE add entry for day: day doesn't show up in Calories per day
+    //FIXME add entry for day: day doesn't show up in Calories per day
 
     const caloriesMap: { [date: string]: number } = {};
     this.foodListFiltered.forEach((food) => {
@@ -115,7 +114,7 @@ export class DashboardComponent implements OnInit {
       name: this.foodForm.value.name,
       calories: this.foodForm.value.calories,
       cheating: cheating,
-      timestamp: date.getTime(), //FIXME UTC
+      timestamp: date.getTime(), //UTC
       userId: this.userService.getCurrentUser()?.tokenDecoded.id || '',
     };
 

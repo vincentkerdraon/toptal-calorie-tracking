@@ -10,6 +10,7 @@ export class UserService {
 
   // SampleProject: fake data
   users: User[] = [
+    //FIXME better test data
     {
       tokenEncoded: 'token_user1',
       tokenDecoded: { id: 'user1', name: 'user1', role: 'user' },

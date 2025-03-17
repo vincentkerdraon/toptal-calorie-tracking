@@ -55,10 +55,6 @@ export class FoodService {
 
   addFood(food: Food): Observable<Food> {
     validateFood(food);
-    return this.addFoodServer(food);
-  }
-
-  private addFoodServer(food: Food): Observable<Food> {
     if (!this.userData) {
       throw new Error('User not connected');
     }

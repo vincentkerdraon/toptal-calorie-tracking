@@ -9,7 +9,7 @@
         <div class="form-row">
           <div class="input-group">
             <span class="input-group-text" for="userId">User ID</span>
-            <input type="text" id="userId" formControlName="userId" class="form-control" placeholder="Banana" />
+            <input type="text" id="userId" formControlName="userId" class="form-control" placeholder="John.Dow" />
           </div>
 
           <div class="input-group">
@@ -120,7 +120,7 @@
       <tbody>
         <tr *ngFor="let entry of caloriesPerDayPerUser">
           <td>{{ entry.userId }}</td>
-          <td>{{ entry.date }}</td>
+          <td>{{ entry.date | date:'dd/MM/yyyy'}} </td>
           <td>{{ entry.calories }}</td>
         </tr>
       </tbody>
@@ -140,7 +140,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let food of foodListFiltered">
-          <td>{{ food.timestamp | localeDate }}</td>
+          <td>{{ food.timestamp | date:'dd/MM/yyyy' }}</td>
           <td>{{ food.name }}</td>
           <td>{{ food.calories }}</td>
           <td [ngClass]="{'text-danger': food.cheating}">{{ food.cheating ? "Cheating" : "" }}</td>
