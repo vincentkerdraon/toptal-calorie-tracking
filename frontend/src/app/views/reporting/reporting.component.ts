@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -12,14 +13,15 @@ import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-reporting',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule,FormsModule],
   templateUrl: './reporting.component.html',
 })
 export class ReportingComponent implements OnInit {
   foodList: Food[] = [];
   foodListFiltered: Food[] = [];
   foodForm: FormGroup;
-  filterForm: FormGroup;
+  filterDateFrom:string;
+  filterDateTo:string;
   selectedFood: Food | null = null;
   last7DaysEntries: number = 0;
   previous7DaysEntries: number = 0;
@@ -43,12 +45,12 @@ export class ReportingComponent implements OnInit {
   ) {
     this.foodAdminService.loadAdminData();
 
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-    this.filterForm = this.fb.group({
-      from: ['', Validators.required],
-      to: [today, Validators.required],
-    });
-
+    const twoWeeksAgo = new Date();
+    twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+    const today = new Date().toISOString().split('T')[0]
+    this.filterDateFrom = twoWeeksAgo.toISOString().split('T')[0];
+    this.filterDateTo=new Date().toISOString().split('T')[0];
+    
     this.foodForm = this.fb.group({
       userId: ['', Validators.required],
       name: ['', Validators.required],
@@ -71,19 +73,14 @@ export class ReportingComponent implements OnInit {
   }
 
   applyFilter(): void {
-    let from = new Date(this.filterForm.value.from).getTime();
-    if (isNaN(from)) {
-      from = 0;
-    }
-    let to = new Date(this.filterForm.value.to).getTime();
-    if (isNaN(to)) {
-      //if not set, set today
-      to = new Date(Date.now()).setUTCHours(0, 0, 0, 0);
-    }
     //to always include the whole day
-    to += 24 * 60 * 60 * 1000;
+    // to += 24 * 60 * 60 * 1000; //FIXME
+
+    const fromTimestamp = new Date(this.filterDateFrom).getTime();
+    const toTimestamp = new Date(this.filterDateTo).getTime();
+
     this.foodListFiltered = this.foodList
-      .filter((food) => food.timestamp >= from && food.timestamp <= to)
+      .filter((food) => food.timestamp <= toTimestamp && food.timestamp >= fromTimestamp)
       .sort((a, b) => {
       if (a.userId === b.userId) {
         if (b.timestamp == a.timestamp){
@@ -157,10 +154,10 @@ export class ReportingComponent implements OnInit {
 
   calculateCaloriesPerDayPerUser(): void {
     this.caloriesPerDayPerUser = [];
-    const userIdFilter = this.filterForm.value.userId || '';
+    // const userIdFilter = this.filterForm.value.userId || ''; //FIXME
 
     this.foodListFiltered
-      .filter((food) => !userIdFilter || food.userId === userIdFilter)
+      // .filter((food) => !userIdFilter || food.userId === userIdFilter)
       .forEach((food) => {
         const date = new Date(food.timestamp).toISOString().split('T')[0];
         const userId = food.userId;

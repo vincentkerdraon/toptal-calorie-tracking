@@ -39,125 +39,162 @@
     </div>
   </div>
 
-  <div class="mt-4">
-    <h3>Statistics</h3>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Statistic</th>
-          <th>Value</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Number of added entries in the last 7 days</td>
-          <td>{{ last7DaysEntries }}</td>
-        </tr>
-        <tr>
-          <td>Number of added entries the week before that</td>
-          <td>{{ previous7DaysEntries }}</td>
-        </tr>
-        <tr>
-          <td>Average number of calories added per user for the previous 7 days</td>
-          <td>{{ averageCaloriesPerUser | number : "1.0-0" }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="mt-4">
-    <h3>User Follow-up</h3>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>User ID</th>
-          <th>Entries Last 7 Days</th>
-          <th>Entries Previous 7 Days</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let entry of userFollowUp">
-          <td>{{ entry.userId }}</td>
-          <td>{{ entry.last7DaysEntries }}</td>
-          <td>{{ entry.previous7DaysEntries }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-
-  <h3 class="mt-4">Recap per days</h3>
-  <form [formGroup]="filterForm">
-    <div class="row">
-      <div class="col-md-3">
-        <div class="input-group">
-          <span class="input-group-text" for="from">From</span>
-          <input type="date" class="form-control" id="from" placeholder="From" aria-label="From" aria-describedby="from"
-            formControlName="from" (change)="applyFilter()">
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="input-group">
-          <span class="input-group-text" for="to">To</span>
-          <input type="date" class="form-control" id="to" placeholder="To" aria-label="To" aria-describedby="to"
-            formControlName="to" (change)="applyFilter()">
-        </div>
-      </div>
+  <ul class="nav nav-tabs mt-4" id="additionalTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+      <a class="nav-link active" id="statistics-tab" data-bs-toggle="tab" href="#statistics" role="tab"
+        aria-controls="statistics" aria-selected="true">Statistics</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="user-follow-up-tab" data-bs-toggle="tab" href="#user-follow-up" role="tab"
+        aria-controls="user-follow-up" aria-selected="false">User Follow-up</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="calories-per-day-per-user-tab" data-bs-toggle="tab" href="#calories-per-day-per-user"
+        role="tab" aria-controls="calories-per-day-per-user" aria-selected="false">Calories Per Day Per User</a>
+    </li>
+    <li class="nav-item" role="presentation">
+      <a class="nav-link" id="entries-tab" data-bs-toggle="tab" href="#entries" role="tab" aria-controls="entries"
+        aria-selected="false">Entries</a>
+    </li>
+  </ul>
+  <div class="tab-content mt-4">
+    <div class="tab-pane fade show active" id="statistics" role="tabpanel" aria-labelledby="statistics-tab">
+      <h4>Statistics</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Statistic</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Number of added entries in the last 7 days</td>
+            <td>{{ last7DaysEntries }}</td>
+          </tr>
+          <tr>
+            <td>Number of added entries the week before that</td>
+            <td>{{ previous7DaysEntries }}</td>
+          </tr>
+          <tr>
+            <td>Average number of calories added per user for the previous 7 days</td>
+            <td>{{ averageCaloriesPerUser | number : "1.0-0" }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-  </form>
+    <div class="tab-pane fade" id="user-follow-up" role="tabpanel" aria-labelledby="user-follow-up-tab">
+      <h4>User Follow-up</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Entries Last 7 Days</th>
+            <th>Entries Previous 7 Days</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let entry of userFollowUp">
+            <td>{{ entry.userId }}</td>
+            <td>{{ entry.last7DaysEntries }}</td>
+            <td>{{ entry.previous7DaysEntries }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tab-pane fade" id="calories-per-day-per-user" role="tabpanel"
+      aria-labelledby="calories-per-day-per-user-tab">
+      <h4>Calories Per Day Per User</h4>
 
+      <form>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="input-group">
+              <span class="input-group-text" for="filter-date-from">From</span>
+              <input type="date" class="form-control" id="filter-date-from" name="filter-date-from" aria-label="From"
+                aria-describedby="filter-date-from" [(ngModel)]="filterDateFrom" (change)="applyFilter()">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="input-group">
+              <span class="input-group-text" for="filter-date-to">To</span>
+              <input type="date" class="form-control" id="filter-date-to" name="filter-date-to" aria-label="To"
+                aria-describedby="filter-date-to" [(ngModel)]="filterDateTo" (change)="applyFilter()">
+            </div>
+          </div>
+        </div>
+      </form>
 
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>UserId</th>
+            <th>Date</th>
+            <th>Calories</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let food of caloriesPerDayPerUser">
+            <td>{{ food.userId }}</td>
+            <td>{{ food.date | date:'dd/MM/yyyy'}} </td>
+            <td [ngClass]="{'text-danger': food.threshold!=undefined && food.calories > food.threshold}">
+              {{ food.calories }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tab-pane fade" id="entries" role="tabpanel" aria-labelledby="entries-tab">
+      <h4>Entries</h4>
 
-  <div class="mt-4">
-    <h4>Calories Per Day Per User</h4>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>User ID</th>
-          <th>Date</th>
-          <th>Calories</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let food of caloriesPerDayPerUser">
-          <td>{{ food.userId }}</td>
-          <td>{{ food.date | date:'dd/MM/yyyy'}} </td>
-          <td [ngClass]="{'text-danger': food.threshold!=undefined && food.calories > food.threshold}">
-            {{ food.calories }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+      <form>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="input-group">
+              <span class="input-group-text" for="filter-date-from">From</span>
+              <input type="date" class="form-control" id="filter-date-from" name="filter-date-from" aria-label="From"
+                aria-describedby="filter-date-from" [(ngModel)]="filterDateFrom" (change)="applyFilter()">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="input-group">
+              <span class="input-group-text" for="filter-date-to">To</span>
+              <input type="date" class="form-control" id="filter-date-to" name="filter-date-to" aria-label="To"
+                aria-describedby="filter-date-to" [(ngModel)]="filterDateTo" (change)="applyFilter()">
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>UserId</th>
+            <th>Date</th>
+            <th>Food Name</th>
+            <th>Calories</th>
+            <th>Cheating</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let food of foodListFiltered">
+            <td>{{ food.userId }}</td>
+            <td>{{ food.timestamp | date:'dd/MM/yyyy' }}</td>
+            <td>{{ food.name }}</td>
+            <td>{{ food.calories }}</td>
+            <td [ngClass]="{'text-danger': food.cheating}">{{ food.cheating ? "Cheating" : "" }}</td>
+            <td> <button class="btn btn-primary btn-sm ml-2" (click)="onSelectFood(food)">
+                Edit
+              </button></td>
+            <td> <button class="btn btn-danger btn-sm ml-2" (click)="onDeleteFood(food)">
+                Delete
+              </button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <div class="mt-4">
-    <h4>Entries</h4>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Food Name</th>
-          <th>Calories</th>
-          <th>Cheating</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let food of foodListFiltered">
-          <td>{{ food.userId }}</td>
-          <td>{{ food.timestamp | date:'dd/MM/yyyy' }}</td>
-          <td>{{ food.name }}</td>
-          <td>{{ food.calories }}</td>
-          <td [ngClass]="{'text-danger': food.cheating}">{{ food.cheating ? "Cheating" : "" }}</td>
-          <td> <button class="btn btn-primary btn-sm ml-2" (click)="onSelectFood(food)">
-              Edit
-            </button></td>
-          <td> <button class="btn btn-danger btn-sm ml-2" (click)="onDeleteFood(food)">
-              Delete
-            </button></td>
-        </tr>
-      </tbody>
-    </table>
 
 
-  </div>
 </div>

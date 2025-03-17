@@ -10,30 +10,29 @@ export class UserService {
 
   // SampleProject: fake data
   users: User[] = [
-    //FIXME better test data
     {
-      tokenEncoded: 'token_user1',
-      tokenDecoded: { id: 'user1', role: 'user' },
+      tokenEncoded: 'token_John',
+      tokenDecoded: { id: 'John.Doe', role: 'user' },
       settings: { caloryThreshold: 2100 },
     },
     {
-      tokenEncoded: 'token_user2',
-      tokenDecoded: { id: 'user2',  role: 'user' },
+      tokenEncoded: 'token_Jane',
+      tokenDecoded: { id: 'Jane.Smith',  role: 'user' },
       settings: { caloryThreshold: 2300 },
     },
     {
-      tokenEncoded: 'token_user3',
-      tokenDecoded: { id: 'user3',  role: 'user' },
+      tokenEncoded: 'token_Emily',
+      tokenDecoded: { id: 'Emily.Davis',  role: 'user' },
       settings: { caloryThreshold: 2100 },
     },
     {
-      tokenEncoded: 'token_admin1',
-      tokenDecoded: { id: 'admin1',  role: 'admin' },
+      tokenEncoded: 'token_Jessica',
+      tokenDecoded: { id: 'Jessica.Martinez',  role: 'admin' },
       settings: { caloryThreshold: 2100 },
     },
     {
-      tokenEncoded: 'token_admin2',
-      tokenDecoded: { id: 'admin2',  role: 'admin' },
+      tokenEncoded: 'token_Barbara',
+      tokenDecoded: { id: 'Barbara.White',  role: 'admin' },
       settings: { caloryThreshold: 2100 },
     },
   ];
@@ -88,7 +87,7 @@ export class UserService {
     if (!user) {
       throw new Error('User not found');
     }
-    //FIXME send to backend to persist
+    //SampleProject for now not persisting in backend
     user.settings = settings;
     this.saveUserToLocalStorage(user);
   }
