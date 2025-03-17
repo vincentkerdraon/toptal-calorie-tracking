@@ -53,7 +53,7 @@ export class ReportingComponent implements OnInit {
       userId: ['', Validators.required],
       name: ['', Validators.required],
       calories: ['', [Validators.required, Validators.min(1)]],
-      timestamp: ['', Validators.required],
+      date: [today, Validators.required],
       cheating: [false],
     });
   }

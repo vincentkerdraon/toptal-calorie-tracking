@@ -3,48 +3,65 @@
   <h2>Reporting</h2>
 
 
-  <form [formGroup]="foodForm" (ngSubmit)="onSaveFood()">
-    <div class="form-row">
-      <div class="input-group col-md-3">
-        <span class="input-group-text" for="userId">User ID</span>
-        <input type="text" id="userId" formControlName="userId" class="form-control" placeholder="Banana" />
-      </div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form [formGroup]="foodForm" (ngSubmit)="onSaveFood()">
+        <div class="form-row">
+          <div class="input-group">
+            <span class="input-group-text" for="userId">User ID</span>
+            <input type="text" id="userId" formControlName="userId" class="form-control" placeholder="Banana" />
+          </div>
 
-      <div class="input-group col-md-3">
-        <span class="input-group-text" for="name">Food Name</span>
-        <input type="text" id="name" formControlName="name" class="form-control" placeholder="Banana" />
-      </div>
-      <div class="input-group col-md-3">
-        <span class="input-group-text" for="calories">Calories</span>
-        <input type="number" id="calories" formControlName="calories" class="form-control"
-          placeholder="Enter calories" />
-      </div>
-      <div class="input-group col-md-3">
-        <span class="input-group-text" for="date">Date</span>
-        <input type="date" id="date" formControlName="date" class="form-control" />
-      </div>
-      <div class="input-group col-md-3 align-items-center">
-        <span class="input-group-text" for="cheating">Cheating</span>
-        <div class="form-check ml-2"></div>
-        <input type="checkbox" id="cheating" formControlName="cheating" class="form-check-input" />
-      </div>
-      <div class="form-group align-self-end">
-        <button type="submit" class="btn btn-success w-100">Save</button>
-      </div>
+          <div class="input-group">
+            <span class="input-group-text" for="name">Food Name</span>
+            <input type="text" id="name" formControlName="name" class="form-control" placeholder="Banana" />
+          </div>
+          <div class="input-group">
+            <span class="input-group-text" for="calories">Calories</span>
+            <input type="number" id="calories" formControlName="calories" class="form-control"
+              placeholder="Enter calories" />
+          </div>
+          <div class="input-group">
+            <span class="input-group-text" for="date">Date</span>
+            <input type="date" id="date" formControlName="date" class="form-control" />
+          </div>
+          <div class="input-group align-items-center">
+            <span class="input-group-text" for="cheating">Cheating</span>
+            <div class="form-check ml-2"></div>
+            <input type="checkbox" id="cheating" formControlName="cheating" class="form-check-input" />
+          </div>
+          <div class="form-group align-self-end">
+            <button type="submit" class="btn btn-success w-100">Save</button>
+          </div>
+        </div>
+      </form>
     </div>
-  </form>
-
+  </div>
 
   <div class="mt-4">
     <h3>Statistics</h3>
-    <p>Number of added entries in the last 7 days: {{ last7DaysEntries }}</p>
-    <p>
-      Number of added entries the week before that: {{ previous7DaysEntries }}
-    </p>
-    <p>
-      Average number of calories added per user for the previous 7 days:
-      {{ averageCaloriesPerUser | number : "1.0-2" }}
-    </p>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Statistic</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Number of added entries in the last 7 days</td>
+          <td>{{ last7DaysEntries }}</td>
+        </tr>
+        <tr>
+          <td>Number of added entries the week before that</td>
+          <td>{{ previous7DaysEntries }}</td>
+        </tr>
+        <tr>
+          <td>Average number of calories added per user for the previous 7 days</td>
+          <td>{{ averageCaloriesPerUser | number : "1.0-0" }}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <div class="mt-4">
@@ -75,19 +92,14 @@
         <div class="input-group">
           <span class="input-group-text" for="from">From</span>
           <input type="date" class="form-control" id="from" placeholder="From" aria-label="From" aria-describedby="from"
-            formControlName="from">
+            formControlName="from" (change)="applyFilter()">
         </div>
       </div>
       <div class="col-md-3">
         <div class="input-group">
           <span class="input-group-text" for="to">To</span>
           <input type="date" class="form-control" id="to" placeholder="To" aria-label="To" aria-describedby="to"
-            formControlName="to">
-        </div>
-      </div>
-      <div class="col-md-2">
-        <div class="input-group">
-          <button class="btn btn-primary" (click)="applyFilter()">Filter</button>
+            formControlName="to" (change)="applyFilter()">
         </div>
       </div>
     </div>
@@ -131,7 +143,7 @@
           <td>{{ food.timestamp | localeDate }}</td>
           <td>{{ food.name }}</td>
           <td>{{ food.calories }}</td>
-          <td>{{ food.cheating ? "Cheating" : "Not Cheating" }}</td>
+          <td [ngClass]="{'text-danger': food.cheating}">{{ food.cheating ? "Cheating" : "" }}</td>
           <td> <button class="btn btn-primary btn-sm ml-2" (click)="onSelectFood(food)">
               Edit
             </button></td>
