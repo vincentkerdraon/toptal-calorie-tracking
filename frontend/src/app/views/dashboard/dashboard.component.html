@@ -2,11 +2,11 @@
   <h2>Dashboard</h2>
   <h3>Add new entry</h3>
 
-  <form [formGroup]="addFoodForm" (ngSubmit)="onAddFood()">
+  <form [formGroup]="foodForm" (ngSubmit)="onAddFood()">
     <div class="form-row">
       <div class="input-group col-md-3">
         <span class="input-group-text" for="name">Food Name</span>
-        <input type="text" id="name" formControlName="name" class="form-control" placeholder="Enter food name" />
+        <input type="text" id="name" formControlName="name" class="form-control" placeholder="Banana" />
       </div>
       <div class="input-group col-md-3">
         <span class="input-group-text" for="calories">Calories</span>
@@ -53,9 +53,9 @@
     </div>
   </form>
 
-  <div class="mt-4">
+  <div class="mt-4" *ngIf="user">
     <h4>Calories</h4>
-    <div class="form-group" *ngIf="user">
+    <div class="form-group">
       <label for="threshold">Threshold</label>
       <input type="number" id="threshold" [(ngModel)]="user.settings.caloryThreshold" class="form-control" />
       <button class="btn btn-primary mt-2" (click)="updateThreshold()">
@@ -74,7 +74,12 @@
       <tbody>
         <tr *ngFor="let entry of caloriesPerDay">
           <td>{{ entry.date | localeDate }}</td>
-          <td>{{ entry.calories }}</td>
+          <td>
+            <div class="alert"
+              [ngClass]="{'alert-danger': entry.calories > user.settings.caloryThreshold, 'alert-success': entry.calories <= user.settings.caloryThreshold}">
+              {{ entry.calories }}
+            </div>
+          </td>
           <td>
             <button class="btn btn-secondary" (click)="setDateFilterToDay(entry.date)">
               Day details

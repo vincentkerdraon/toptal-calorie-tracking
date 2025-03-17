@@ -7,12 +7,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { Food } from '../../models/food.model';
+import { LocaleDatePipe } from '../../pipes/locale-date.pipe';
 import { FoodAdminService } from '../../services/foodAdmin.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-reporting',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, LocaleDatePipe],
   templateUrl: './reporting.component.html',
 })
 export class ReportingComponent implements OnInit {
@@ -137,30 +138,43 @@ export class ReportingComponent implements OnInit {
 
     this.averageCaloriesPerUser = totalUsers ? totalCalories / totalUsers : 0;
 
-    this.userFollowUp = Object.keys(userCaloriesMap).map((userId) => ({
-      userId,
-      last7DaysEntries: userLast7DaysEntriesMap[userId],
-      previous7DaysEntries: userPrevious7DaysEntriesMap[userId],
-    }));
+    this.userFollowUp = Object.keys(userCaloriesMap)
+      .map((userId) => ({
+        userId,
+        last7DaysEntries: userLast7DaysEntriesMap[userId],
+        previous7DaysEntries: userPrevious7DaysEntriesMap[userId],
+      }))
+      .sort((a, b) => a.userId.localeCompare(b.userId));
   }
 
   calculateCaloriesPerDayPerUser(): void {
     this.caloriesPerDayPerUser = [];
-    this.foodListFiltered.forEach((food) => {
-      const date = new Date(food.timestamp).toISOString().split('T')[0];
-      const userId = food.userId;
-      const existingEntry = this.caloriesPerDayPerUser.find(
-        (entry) => entry.date === date && entry.userId === userId
-      );
-      if (existingEntry) {
-        existingEntry.calories += food.calories;
-      } else {
-        this.caloriesPerDayPerUser.push({
-          userId,
-          date,
-          calories: food.calories,
-        });
+    const userIdFilter = this.filterForm.value.userId || '';
+
+    this.foodListFiltered
+      .filter((food) => !userIdFilter || food.userId === userIdFilter)
+      .forEach((food) => {
+        const date = new Date(food.timestamp).toISOString().split('T')[0];
+        const userId = food.userId;
+        const existingEntry = this.caloriesPerDayPerUser.find(
+          (entry) => entry.date === date && entry.userId === userId
+        );
+        if (existingEntry) {
+          existingEntry.calories += food.calories;
+        } else {
+          this.caloriesPerDayPerUser.push({
+            userId,
+            date,
+            calories: food.calories,
+          });
+        }
+      });
+
+    this.caloriesPerDayPerUser.sort((a, b) => {
+      if (a.userId === b.userId) {
+        return a.date.localeCompare(b.date);
       }
+      return a.userId.localeCompare(b.userId);
     });
   }
 

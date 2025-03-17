@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { DateFilter, Food, validateFood } from '../models/food.model';
+import { DateFilter, Food, foodApi, validateFood } from '../models/food.model';
 import { TokenEncoded } from '../models/token.model';
 import { UserId } from '../models/user.model';
 import { UserService } from './user.service';
@@ -34,7 +34,7 @@ export class FoodService {
     }
     this.userData = {
       userId: user.tokenDecoded.id,
-      tokenEncoded:user.tokenEncoded,
+      tokenEncoded: user.tokenEncoded,
       dateFilter: { from: 0, to: 0 },
       foods: [],
     };
@@ -53,7 +53,7 @@ export class FoodService {
     }
   }
 
-  addFood(food: Food): Observable<Food> { 
+  addFood(food: Food): Observable<Food> {
     validateFood(food);
     return this.addFoodServer(food);
   }
@@ -62,16 +62,18 @@ export class FoodService {
     if (!this.userData) {
       throw new Error('User not connected');
     }
-    const headers = { 'Authorization': `Bearer ${this.userData.tokenEncoded}` };
-    return this.http.post<Food>(environment.backend+'/api/foods', food, { headers }).pipe(
-      tap((newFood: Food) => {
-      if (this.userData) {
-        this.userData.foods.push(newFood);
-        this.foodSubject.next(this.userData.foods);
-      }
-      }),
-      catchError(this.handleError<Food>('addFoodServer'))
-    );
+    const headers = { Authorization: `Bearer ${this.userData.tokenEncoded}` };
+    return this.http
+      .post<Food>(environment.backend + foodApi, food, { headers })
+      .pipe(
+        tap((newFood: Food) => {
+          if (this.userData) {
+            this.userData.foods.push(newFood);
+            this.foodSubject.next(this.userData.foods);
+          }
+        }),
+        catchError(this.handleError<Food>('addFoodServer'))
+      );
   }
 
   private fetchFood(): Observable<Food[]> {
@@ -80,21 +82,21 @@ export class FoodService {
     }
     let params = new HttpParams();
     params = params.append('userIDs', this.userData.userId);
-    const headers =  {
+    const headers = {
       headers: {
-        'Authorization': `Bearer ${this.userData.tokenEncoded}`,
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${this.userData.tokenEncoded}`,
+        'Content-Type': 'application/json',
       },
-      params: params
-    }
-    return this.http.get<Food[]>(environment.backend+'/api/foods',headers   ).pipe(
+      params: params,
+    };
+    return this.http.get<Food[]>(environment.backend + foodApi, headers).pipe(
       tap((foods: Food[]) => {
-        if (foods==null){
-            foods = []; 
+        if (foods == null) {
+          foods = [];
         }
         if (this.userData && this.userData.userId === this.userData.userId) {
           this.userData.foods = foods;
-          this.foodSubject.next(foods); 
+          this.foodSubject.next(foods);
         }
       }),
       catchError(this.handleError<Food[]>('fetchFood', []))

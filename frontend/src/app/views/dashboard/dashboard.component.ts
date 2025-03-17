@@ -15,7 +15,7 @@ import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, FormsModule,LocaleDatePipe],
+  imports: [ReactiveFormsModule, CommonModule, FormsModule, LocaleDatePipe],
   templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
@@ -23,7 +23,7 @@ export class DashboardComponent implements OnInit {
   foodListFiltered: Food[] = [];
   caloriesPerDay: { date: string; calories: number }[] = [];
   filterForm: FormGroup;
-  addFoodForm: FormGroup;
+  foodForm: FormGroup;
   user: User | null = null;
 
   constructor(
@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
     this.foodService.loadUserData();
 
     //default date for forms
-    const today = new Date().toISOString().split('T')[0]; 
+    const today = new Date().toISOString().split('T')[0];
     const twoWeeksAgo = new Date();
     twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
     const twoWeeksAgoDate = twoWeeksAgo.toISOString().split('T')[0];
@@ -44,10 +44,10 @@ export class DashboardComponent implements OnInit {
       to: [today, Validators.required],
     });
 
-    this.addFoodForm = this.fb.group({
-      name: ['', Validators.required],
+    this.foodForm = this.fb.group({
+      name: ['', [Validators.required]],
       calories: ['', [Validators.required, Validators.min(1)]],
-      date: [today, Validators.required],
+      date: [today, [Validators.required]],
       cheating: [false],
     });
   }
@@ -72,13 +72,16 @@ export class DashboardComponent implements OnInit {
     }
     //to always include the whole day
     to += 24 * 60 * 60 * 1000;
-    this.foodListFiltered = this.foodList.filter(
-      (food) => food.timestamp >= from && food.timestamp <= to
-    );
+    this.foodListFiltered = this.foodList
+      .filter((f) => f.timestamp >= from && f.timestamp <= to)
+      .sort((f1, f2) => f2.timestamp - f1.timestamp);
+
     this.calculateCaloriesPerDay();
   }
 
   calculateCaloriesPerDay(): void {
+    //FIXNE add entry for day: day doesn't show up in Calories per day
+
     const caloriesMap: { [date: string]: number } = {};
     this.foodListFiltered.forEach((food) => {
       const date = new Date(food.timestamp).toISOString().split('T')[0];
@@ -92,29 +95,35 @@ export class DashboardComponent implements OnInit {
         date,
         calories: caloriesMap[date],
       }))
-      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+      .sort(
+        (f1, f2) => new Date(f2.date).getTime() - new Date(f1.date).getTime()
+      );
   }
 
   onAddFood(): void {
-    if (this.addFoodForm.valid) {
-      let date=new Date(this.addFoodForm.value.date)
-      let cheating=this.addFoodForm.value.cheating
-      if (cheating==null){
-        cheating=false
-      }
-      const newFood: Food = {
-        id: '', //will be set by the backend
-        name: this.addFoodForm.value.name,
-        calories: this.addFoodForm.value.calories,
-        cheating: cheating,
-        timestamp: date.getTime(), //FIXME UTC
-        userId: this.userService.getCurrentUser()?.tokenDecoded.id || '',
-      };
-
-      this.foodService.addFood(newFood).subscribe(() => {
-        this.addFoodForm.reset();
-      });
+    if (!this.foodForm.valid) {
+      //FIXME sometimes !valid, not sure why.
+      return;
     }
+    let date = new Date(this.foodForm.value.date);
+    let cheating = this.foodForm.value.cheating;
+    if (cheating == null) {
+      cheating = false;
+    }
+    const newFood: Food = {
+      id: '', //will be set by the backend
+      name: this.foodForm.value.name,
+      calories: this.foodForm.value.calories,
+      cheating: cheating,
+      timestamp: date.getTime(), //FIXME UTC
+      userId: this.userService.getCurrentUser()?.tokenDecoded.id || '',
+    };
+
+    this.foodService.addFood(newFood).subscribe(() => {
+      this.foodForm.reset();
+    });
+
+    this.applyFilter();
   }
 
   setDateFilterToDay(date: string): void {
@@ -126,9 +135,11 @@ export class DashboardComponent implements OnInit {
   }
 
   updateThreshold(): void {
-        if (this.user) {
-      this.userService.updateSettings(this.user.tokenDecoded.id, this.user.settings);
+    if (this.user) {
+      this.userService.updateSettings(
+        this.user.tokenDecoded.id,
+        this.user.settings
+      );
     }
   }
-
 }

@@ -2,58 +2,38 @@
 <div class="container mt-5">
   <h2>Reporting</h2>
 
+
   <form [formGroup]="foodForm" (ngSubmit)="onSaveFood()">
     <div class="form-row">
-      <div class="form-group col-md-2">
-        <label for="userId">User ID</label>
-        <input
-          type="text"
-          id="userId"
-          formControlName="userId"
-          class="form-control"
-        />
+      <div class="input-group col-md-3">
+        <span class="input-group-text" for="userId">User ID</span>
+        <input type="text" id="userId" formControlName="userId" class="form-control" placeholder="Banana" />
       </div>
-      <div class="form-group col-md-2">
-        <label for="name">Food Name</label>
-        <input
-          type="text"
-          id="name"
-          formControlName="name"
-          class="form-control"
-        />
+
+      <div class="input-group col-md-3">
+        <span class="input-group-text" for="name">Food Name</span>
+        <input type="text" id="name" formControlName="name" class="form-control" placeholder="Banana" />
       </div>
-      <div class="form-group col-md-2">
-        <label for="calories">Calories</label>
-        <input
-          type="number"
-          id="calories"
-          formControlName="calories"
-          class="form-control"
-        />
+      <div class="input-group col-md-3">
+        <span class="input-group-text" for="calories">Calories</span>
+        <input type="number" id="calories" formControlName="calories" class="form-control"
+          placeholder="Enter calories" />
       </div>
-      <div class="form-group col-md-2">
-        <label for="timestamp">Date</label>
-        <input
-          type="date"
-          id="timestamp"
-          formControlName="timestamp"
-          class="form-control"
-        />
+      <div class="input-group col-md-3">
+        <span class="input-group-text" for="date">Date</span>
+        <input type="date" id="date" formControlName="date" class="form-control" />
       </div>
-      <div class="form-group col-md-2">
-        <label for="cheating">Cheating</label>
-        <input
-          type="checkbox"
-          id="cheating"
-          formControlName="cheating"
-          class="form-control"
-        />
+      <div class="input-group col-md-3 align-items-center">
+        <span class="input-group-text" for="cheating">Cheating</span>
+        <div class="form-check ml-2"></div>
+        <input type="checkbox" id="cheating" formControlName="cheating" class="form-check-input" />
       </div>
-      <div class="form-group col-md-2 align-self-end">
-        <button type="submit" class="btn btn-success">Save</button>
+      <div class="form-group align-self-end">
+        <button type="submit" class="btn btn-success w-100">Save</button>
       </div>
     </div>
   </form>
+
 
   <div class="mt-4">
     <h3>Statistics</h3>
@@ -87,33 +67,36 @@
     </table>
   </div>
 
+
+  <h3 class="mt-4">Recap per days</h3>
   <form [formGroup]="filterForm">
-    <div class="form-row">
-      <div class="form-group col-md-5">
-        <label for="from">From</label>
-        <input
-          type="date"
-          id="from"
-          formControlName="from"
-          class="form-control"
-          (ngModelChange)="applyFilter()"
-        />
+    <div class="row">
+      <div class="col-md-3">
+        <div class="input-group">
+          <span class="input-group-text" for="from">From</span>
+          <input type="date" class="form-control" id="from" placeholder="From" aria-label="From" aria-describedby="from"
+            formControlName="from">
+        </div>
       </div>
-      <div class="form-group col-md-5">
-        <label for="to">To</label>
-        <input
-          type="date"
-          id="to"
-          formControlName="to"
-          class="form-control"
-          (ngModelChange)="applyFilter()"
-        />
+      <div class="col-md-3">
+        <div class="input-group">
+          <span class="input-group-text" for="to">To</span>
+          <input type="date" class="form-control" id="to" placeholder="To" aria-label="To" aria-describedby="to"
+            formControlName="to">
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="input-group">
+          <button class="btn btn-primary" (click)="applyFilter()">Filter</button>
+        </div>
       </div>
     </div>
   </form>
 
+
+
   <div class="mt-4">
-    <h3>Calories Per Day Per User</h3>
+    <h4>Calories Per Day Per User</h4>
     <table class="table table-striped">
       <thead>
         <tr>
@@ -133,22 +116,32 @@
   </div>
 
   <div class="mt-4">
-    <h3>Food List</h3>
-    <ul class="list-group">
-      <li class="list-group-item" *ngFor="let food of foodListFiltered">
-        {{ food.userId }} - {{ food.name }} - {{ food.calories }} calories -
-        {{ food.cheating ? "Cheating" : "Not Cheating" }} -
-        {{ food.timestamp | date : "shortDate" }}
-        <button
-          class="btn btn-primary btn-sm ml-2"
-          (click)="onSelectFood(food)"
-        >
-          Edit
-        </button>
-        <button class="btn btn-danger btn-sm ml-2" (click)="onDeleteFood(food)">
-          Delete
-        </button>
-      </li>
-    </ul>
+    <h4>Entries</h4>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Food Name</th>
+          <th>Calories</th>
+          <th>Cheating</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let food of foodListFiltered">
+          <td>{{ food.timestamp | localeDate }}</td>
+          <td>{{ food.name }}</td>
+          <td>{{ food.calories }}</td>
+          <td>{{ food.cheating ? "Cheating" : "Not Cheating" }}</td>
+          <td> <button class="btn btn-primary btn-sm ml-2" (click)="onSelectFood(food)">
+              Edit
+            </button></td>
+          <td> <button class="btn btn-danger btn-sm ml-2" (click)="onDeleteFood(food)">
+              Delete
+            </button></td>
+        </tr>
+      </tbody>
+    </table>
+
+
   </div>
 </div>
