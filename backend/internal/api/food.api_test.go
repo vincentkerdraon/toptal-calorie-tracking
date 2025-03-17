@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"topal.com/calorysampleproject/lib/food"
-	"topal.com/calorysampleproject/lib/token"
-	"topal.com/calorysampleproject/lib/user"
+	"toptal.com/calorysampleproject/lib/food"
+	"toptal.com/calorysampleproject/lib/token"
+	"toptal.com/calorysampleproject/lib/user"
 )
 
 type mockBusiness struct {

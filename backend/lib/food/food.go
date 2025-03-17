@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	"topal.com/calorysampleproject/lib/user"
+	"toptal.com/calorysampleproject/lib/user"
 )
 
 type ID string

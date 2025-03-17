@@ -3,8 +3,8 @@ package persist
 import (
 	"testing"
 
-	"topal.com/calorysampleproject/lib/food"
-	"topal.com/calorysampleproject/lib/user"
+	"toptal.com/calorysampleproject/lib/food"
+	"toptal.com/calorysampleproject/lib/user"
 )
 
 func TestFoodPersistMemory(t *testing.T) {

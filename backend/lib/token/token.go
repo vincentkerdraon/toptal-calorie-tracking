@@ -1,7 +1,7 @@
 package token
 
 import (
-	"topal.com/calorysampleproject/lib/user"
+	"toptal.com/calorysampleproject/lib/user"
 )
 
 type TokenEncoded string

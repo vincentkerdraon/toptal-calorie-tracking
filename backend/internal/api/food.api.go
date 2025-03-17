@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"strings"
 
-	"topal.com/calorysampleproject/internal/business"
-	"topal.com/calorysampleproject/lib/food"
-	"topal.com/calorysampleproject/lib/token"
-	"topal.com/calorysampleproject/lib/user"
+	"toptal.com/calorysampleproject/internal/business"
+	"toptal.com/calorysampleproject/lib/food"
+	"toptal.com/calorysampleproject/lib/token"
+	"toptal.com/calorysampleproject/lib/user"
 )
 
 func HandleFood(w http.ResponseWriter, r *http.Request, tokenDecoder token.Decoder, bus business.Business) {

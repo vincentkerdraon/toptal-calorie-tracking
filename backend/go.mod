@@ -1,4 +1,4 @@
-module topal.com/calorysampleproject
+module toptal.com/calorysampleproject
 
 go 1.24.1
 

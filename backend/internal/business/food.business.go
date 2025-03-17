@@ -3,11 +3,11 @@ package business
 import (
 	"errors"
 
-	"topal.com/calorysampleproject/internal/idgenerator"
-	"topal.com/calorysampleproject/internal/persist"
-	"topal.com/calorysampleproject/lib/food"
-	"topal.com/calorysampleproject/lib/token"
-	"topal.com/calorysampleproject/lib/user"
+	"toptal.com/calorysampleproject/internal/idgenerator"
+	"toptal.com/calorysampleproject/internal/persist"
+	"toptal.com/calorysampleproject/lib/food"
+	"toptal.com/calorysampleproject/lib/token"
+	"toptal.com/calorysampleproject/lib/user"
 )
 
 type (
