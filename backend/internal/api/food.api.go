@@ -1,11 +1,9 @@
 package api
 
 import (
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"net/http"
 	"strings"
 
@@ -29,7 +27,7 @@ func HandleFood(w http.ResponseWriter, r *http.Request, tokenDecoder token.Decod
 		return
 	}
 
-	var res interface{}
+	var res any
 	var code int
 	switch r.Method {
 	case http.MethodPost:
@@ -42,6 +40,15 @@ func HandleFood(w http.ResponseWriter, r *http.Request, tokenDecoder token.Decod
 		code, res, err = handleDelete(r, bus, *tokenDecoded)
 	default:
 		panic(r.Method)
+	}
+
+	//For some errors, it helps to forward them to the client.
+	//but careful what we expose
+	if err != nil {
+		if res = forwardFunctionalErrors(err); res != nil {
+			code = http.StatusBadRequest
+			err = nil
+		}
 	}
 
 	if err != nil {
@@ -69,11 +76,32 @@ func HandleFood(w http.ResponseWriter, r *http.Request, tokenDecoder token.Decod
 	}
 }
 
-func handleDelete(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, interface{}, error) {
-	if !strings.HasPrefix(r.URL.Path+"/", food.BaseAPI) {
+func forwardFunctionalErrors(err error) any {
+
+	FoodNotFoundError := &food.FoodNotFoundError{}
+	if errors.As(err, &FoodNotFoundError) {
+		return food.NewErrorReturnAPI(FoodNotFoundError)
+	}
+	FoodAlreadyExistsError := &food.FoodAlreadyExistsError{}
+	if errors.As(err, &FoodAlreadyExistsError) {
+		return food.NewErrorReturnAPI(FoodAlreadyExistsError)
+	}
+	FoodInvalidEditError := &food.FoodInvalidEditError{}
+	if errors.As(err, &FoodInvalidEditError) {
+		return food.NewErrorReturnAPI(FoodInvalidEditError)
+	}
+	EntryInFutureError := &food.EntryInFutureError{}
+	if errors.As(err, &EntryInFutureError) {
+		return food.NewErrorReturnAPI(EntryInFutureError)
+	}
+	return nil
+}
+
+func handleDelete(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, any, error) {
+	id, f := strings.CutPrefix(r.URL.Path, food.BaseAPI+"/")
+	if !f {
 		return http.StatusBadRequest, nil, nil
 	}
-	id := r.URL.Path[len(food.BaseAPI+"/"):]
 	if id == "" {
 		return http.StatusBadRequest, nil, nil
 	}
@@ -81,7 +109,7 @@ func handleDelete(r *http.Request, bus business.Business, tokenDecoded token.Tok
 	return http.StatusOK, nil, bus.Delete(food.ID(id), tokenDecoded)
 }
 
-func handleList(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, interface{}, error) {
+func handleList(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, any, error) {
 	if r.URL.Path != food.BaseAPI {
 		return http.StatusBadRequest, nil, nil
 	}
@@ -95,11 +123,11 @@ func handleList(r *http.Request, bus business.Business, tokenDecoded token.Token
 	return http.StatusOK, res, err
 }
 
-func handleUpdate(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, interface{}, error) {
-	if !strings.HasPrefix(r.URL.Path+"/", food.BaseAPI) {
+func handleUpdate(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, any, error) {
+	id, f := strings.CutPrefix(r.URL.Path, food.BaseAPI+"/")
+	if !f {
 		return http.StatusBadRequest, nil, nil
 	}
-	id := r.URL.Path[len(food.BaseAPI+"/"):]
 	if id == "" {
 		return http.StatusBadRequest, nil, nil
 	}
@@ -114,23 +142,19 @@ func handleUpdate(r *http.Request, bus business.Business, tokenDecoded token.Tok
 	}
 
 	res, err := bus.Update(newFood, tokenDecoded)
+	if errors.Is(err, &food.FoodNotFoundError{}) {
+		return http.StatusNotFound, nil, nil
+	}
 	return http.StatusOK, res, err
 }
 
-func handleAdd(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, interface{}, error) {
+func handleAdd(r *http.Request, bus business.Business, tokenDecoded token.Token) (int, any, error) {
 	if r.URL.Path != food.BaseAPI {
 		return http.StatusBadRequest, nil, nil
 	}
 
-	bodyBytes, err := io.ReadAll(r.Body)
-	if err != nil {
-		return http.StatusInternalServerError, nil, err
-	}
-	fmt.Printf("Request Body: %s\n", string(bodyBytes))
-	r.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
-
 	var newFood = &food.Food{}
-	err = json.NewDecoder(r.Body).Decode(newFood)
+	err := json.NewDecoder(r.Body).Decode(newFood)
 	if err != nil {
 		return http.StatusBadRequest, nil, nil
 	}

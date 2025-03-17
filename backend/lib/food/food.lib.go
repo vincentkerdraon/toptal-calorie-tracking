@@ -64,8 +64,22 @@ func (e *FoodInvalidEditError) Error() string {
 	return "FoodInvalidEdit"
 }
 
+type EntryInFutureError struct{}
+
+func (e *EntryInFutureError) Error() string {
+	return "EntryInFuture"
+}
+
 type GetInput struct {
 	UserIDs []user.ID `json:"userIDs"`
 }
 
-const BaseAPI = "/api/foods/"
+const BaseAPI = "/api/foods"
+
+type ErrorReturnAPI struct {
+	Error string
+}
+
+func NewErrorReturnAPI(err error) ErrorReturnAPI {
+	return ErrorReturnAPI{Error: err.Error()}
+}

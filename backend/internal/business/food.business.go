@@ -2,6 +2,7 @@ package business
 
 import (
 	"errors"
+	"time"
 
 	"toptal.com/calorysampleproject/internal/idgenerator"
 	"toptal.com/calorysampleproject/internal/persist"
@@ -49,6 +50,10 @@ func (b *impl) Add(f food.Food, t token.Token) (*food.Food, error) {
 		return nil, &token.UnauthorizedError{}
 	}
 
+	if f.Timestamp.After(time.Now()) {
+		return nil, &food.EntryInFutureError{}
+	}
+
 	i := 10
 	for {
 		f.ID = food.ID(b.idGenerator.ID())
@@ -66,6 +71,9 @@ func (b *impl) Add(f food.Food, t token.Token) (*food.Food, error) {
 func (b *impl) Update(f food.Food, t token.Token) (*food.Food, error) {
 	if t.Role != token.RoleAdmin && f.UserID != t.ID {
 		return nil, &token.UnauthorizedError{}
+	}
+	if f.Timestamp.After(time.Now()) {
+		return nil, &food.EntryInFutureError{}
 	}
 	return b.persist.Update(f)
 }
