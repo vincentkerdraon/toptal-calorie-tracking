@@ -15,7 +15,6 @@ const (
 // Assuming the token is a JWT token containing this data
 type Token struct {
 	ID   user.ID
-	Name string
 	Role UserRole
 }
 

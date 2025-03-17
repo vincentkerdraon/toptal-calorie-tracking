@@ -60,7 +60,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Chocolate",
 		Calories:  100,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId002",
@@ -68,7 +68,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Ice Cream",
 		Calories:  200,
 		Cheating:  true,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId003",
@@ -76,7 +76,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Chicken",
 		Calories:  300,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId004",
@@ -84,7 +84,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Chicken",
 		Calories:  400,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId005",
@@ -92,7 +92,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Chicken",
 		Calories:  500,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId006",
@@ -100,7 +100,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Chicken",
 		Calories:  600,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId007",
@@ -108,7 +108,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Chicken",
 		Calories:  700,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId008",
@@ -116,7 +116,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Ice Cream",
 		Calories:  200,
 		Cheating:  true,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	})
 	add(food.Food{
 		ID:        "foodId009",
@@ -124,7 +124,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 		Name:      "Chocolate",
 		Calories:  100,
 		Cheating:  false,
-		UserID:    "user2",
+		UserID:    "Jane.Smith",
 	})
 
 	for i := 100; i <= 130; i++ {
@@ -134,7 +134,7 @@ func populateFoodDataMock(persist persist.FoodPersist) {
 			Name:      fmt.Sprintf("FoodItem%d", i),
 			Calories:  100 * i,
 			Cheating:  i%2 == 0,
-			UserID:    "user3",
+			UserID:    "Emily.Davis",
 		})
 		if err != nil {
 			panic(err)

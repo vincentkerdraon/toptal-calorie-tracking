@@ -27,11 +27,11 @@ func TestMainIntegrationAsUser(t *testing.T) {
 		Name:      "Banana",
 		Calories:  105,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	}
 	foodJSON, _ := json.Marshal(foodNew)
 	req, err := http.NewRequest("POST", "http://localhost:"+port+"/api/foods", bytes.NewBuffer(foodJSON))
-	req.Header.Set("Authorization", "Bearer token_user1")
+	req.Header.Set("Authorization", "Bearer token_John")
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -52,9 +52,9 @@ func TestMainIntegrationAsUser(t *testing.T) {
 	// Test Get All Foods
 	req, err = http.NewRequest("GET", "http://localhost:"+port+"/api/foods", nil)
 	q := req.URL.Query()
-	q.Add("userIDs", "user1")
+	q.Add("userIDs", "John.Doe")
 	req.URL.RawQuery = q.Encode()
-	req.Header.Set("Authorization", "Bearer token_user1")
+	req.Header.Set("Authorization", "Bearer token_John")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -80,11 +80,11 @@ func TestMainIntegrationAsUser(t *testing.T) {
 		Name:      "Banana",
 		Calories:  110,
 		Cheating:  true,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	}
 	updatedFoodJSON, _ := json.Marshal(updatedFood)
 	req, err = http.NewRequest("PUT", "http://localhost:"+port+"/api/foods/"+string(createdFood.ID), bytes.NewBuffer(updatedFoodJSON))
-	req.Header.Set("Authorization", "Bearer token_user1")
+	req.Header.Set("Authorization", "Bearer token_John")
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -99,7 +99,7 @@ func TestMainIntegrationAsUser(t *testing.T) {
 
 	// Test Delete Food
 	req, err = http.NewRequest("DELETE", "http://localhost:"+port+"/api/foods/"+string(createdFood.ID), nil)
-	req.Header.Set("Authorization", "Bearer token_user1")
+	req.Header.Set("Authorization", "Bearer token_John")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -127,11 +127,11 @@ func TestMainIntegrationAsError(t *testing.T) {
 		Name:      "Apple",
 		Calories:  95,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	}
 	nonExistentFoodJSON, _ := json.Marshal(nonExistentFood)
 	req, err := http.NewRequest("PUT", "http://localhost:"+port+"/api/foods/nonexistent", bytes.NewBuffer(nonExistentFoodJSON))
-	req.Header.Set("Authorization", "Bearer token_user1")
+	req.Header.Set("Authorization", "Bearer token_John")
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -150,11 +150,11 @@ func TestMainIntegrationAsError(t *testing.T) {
 		Name:      "Future Food",
 		Calories:  150,
 		Cheating:  false,
-		UserID:    "user1",
+		UserID:    "John.Doe",
 	}
 	foodFutureJSON, _ := json.Marshal(foodFuture)
 	req, err = http.NewRequest("POST", "http://localhost:"+port+"/api/foods", bytes.NewBuffer(foodFutureJSON))
-	req.Header.Set("Authorization", "Bearer token_user1")
+	req.Header.Set("Authorization", "Bearer token_John")
 	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

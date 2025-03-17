@@ -12,7 +12,7 @@
     "name": "Banana",
     "calories": 105,
     "cheating": false,
-    "userId": "user123"
+    "userId": "John.Doe"
 }
 ```
 **Response Codes:** 201, 400, 403, 5XX  
@@ -25,21 +25,21 @@ Same food object with an id.
     "name": "Banana",
     "calories": 105,
     "cheating": false,
-    "userId": "user123"
+    "userId": "John.Doe"
 }
 ```
 
 **Example cURL command to test**
 ```sh
 curl -X POST http://127.0.0.1:8080/api/foods \
--H "Authorization: Bearer token_user1" \
+-H "Authorization: Bearer token_John" \
 -H "Content-Type: application/json" \
 -d '{
     "timestamp": 1678901234567,
     "name": "Banana",
     "calories": 105,
     "cheating": false,
-    "userId": "user1"
+    "userId": "John.Doe"
 }'
 ```
 
@@ -49,7 +49,7 @@ curl -X POST http://127.0.0.1:8080/api/foods \
 **Headers:**  
 `Authorization: Bearer <token>`  
 **Parameters:**
-userIDs=user1,user2
+userIDs=John.Doe,Jane.Smith
 **Response Codes:** 200, 400, 403, 5XX  
 **Response Body:**
 ```json
@@ -60,20 +60,20 @@ userIDs=user1,user2
         "name": "Banana",
         "calories": 105,
         "cheating": false,
-        "userId": "user123"
+        "userId": "John.Doe"
     }]
 }
 ```
 
 **Example cURL command to test**
 ```sh
-curl -X GET http://127.0.0.1:8080/api/foods?userIDs=user1 \
--H "Authorization: Bearer token_user1"
+curl -X GET http://127.0.0.1:8080/api/foods?userIDs=John.Doe \
+-H "Authorization: Bearer token_John"
 ```
 or for all users
 ```sh
 curl -X GET http://127.0.0.1:8080/api/foods \
--H "Authorization: Bearer token_admin1" \
+-H "Authorization: Bearer token_Jessica" \
 -H "Content-Type: application/json"
 ```
 
@@ -90,26 +90,17 @@ curl -X GET http://127.0.0.1:8080/api/foods \
     "name": "Banana",
     "calories": 105,
     "cheating": false,
-    "userId": "user123"
+    "userId": "John.Doe"
 }
 ```
 **Response Codes:** 200, 400, 403, 404, 410, 5XX  
 **Response Body:**
-```json
-{
-    "id": "id1",
-    "timestamp": 1678901234567,
-    "name": "Banana",
-    "calories": 105,
-    "cheating": false,
-    "userId": "user123"
-}
-```
+(what was sent)
 
 **Example cURL command to test**
 ```sh
 curl -X PUT http://127.0.0.1:8080/api/foods/id1 \
--H "Authorization: Bearer token_user1" \
+-H "Authorization: Bearer token_Jessica" \
 -H "Content-Type: application/json" \
 -d '{
     "id": "id1",
@@ -117,7 +108,7 @@ curl -X PUT http://127.0.0.1:8080/api/foods/id1 \
     "name": "Banana",
     "calories": 105,
     "cheating": false,
-    "userId": "user1"
+    "userId": "John.Doe"
 }'
 ```
 
@@ -130,5 +121,5 @@ curl -X PUT http://127.0.0.1:8080/api/foods/id1 \
 **Example cURL command to test**
 ```sh
 curl -X DELETE http://127.0.0.1:8080/api/foods/id1 \
--H "Authorization: Bearer token_user1"
+-H "Authorization: Bearer token_Jessica"
 ```

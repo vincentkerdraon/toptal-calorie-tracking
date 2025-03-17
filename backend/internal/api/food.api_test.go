@@ -56,12 +56,12 @@ func TestHandleFood_Add(t *testing.T) {
 	}
 
 	// Create a new HTTP request
-	body := []byte(`{"timestamp":1678901234567,"name":"Banana","calories":105,"cheating":false,"userId":"user1"}`)
+	body := []byte(`{"timestamp":1678901234567,"name":"Banana","calories":105,"cheating":false,"userId":"John.Doe"}`)
 	req, err := http.NewRequest(http.MethodPost, "/api/foods", bytes.NewBuffer(body))
 	if err != nil {
 		t.Fatal(err)
 	}
-	req.Header.Set("Authorization", "Bearer token_user1")
+	req.Header.Set("Authorization", "Bearer token_John")
 
 	// Create a ResponseRecorder to record the response
 	rr := httptest.NewRecorder()
@@ -80,7 +80,7 @@ func TestHandleFood_Add(t *testing.T) {
 	}
 
 	// Check the response body
-	expectedBody := `{"timestamp":1678901234567,"id":"id1","name":"Banana","calories":105,"cheating":false,"userId":"user1"}`
+	expectedBody := `{"timestamp":1678901234567,"id":"id1","name":"Banana","calories":105,"cheating":false,"userId":"John.Doe"}`
 	res := strings.TrimSpace(rr.Body.String())
 	if res != expectedBody {
 		t.Errorf("handler returned unexpected body: \ngot :%v\nwant:%v", res, expectedBody)
