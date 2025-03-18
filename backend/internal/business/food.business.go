@@ -2,7 +2,6 @@ package business
 
 import (
 	"errors"
-	"time"
 
 	"toptal.com/calorysampleproject/internal/idgenerator"
 	"toptal.com/calorysampleproject/internal/persist"
@@ -50,13 +49,14 @@ func (b *impl) Add(f food.Food, t token.Token) (*food.Food, error) {
 		return nil, &token.UnauthorizedError{}
 	}
 
-	if f.Timestamp.After(time.Now()) {
-		return nil, &food.EntryInFutureError{}
-	}
-
+	//if the ID already exists, retry a few times
 	i := 10
 	for {
 		f.ID = food.ID(b.idGenerator.ID())
+		//now that we have an id, we can validate
+		if err := f.Validate(); err != nil {
+			return nil, err
+		}
 		f2, err := b.persist.Add(f)
 		if !errors.Is(err, &food.FoodAlreadyExistsError{}) {
 			return f2, err
@@ -72,8 +72,8 @@ func (b *impl) Update(f food.Food, t token.Token) (*food.Food, error) {
 	if t.Role != token.RoleAdmin && f.UserID != t.ID {
 		return nil, &token.UnauthorizedError{}
 	}
-	if f.Timestamp.After(time.Now()) {
-		return nil, &food.EntryInFutureError{}
+	if err := f.Validate(); err != nil {
+		return nil, err
 	}
 	return b.persist.Update(f)
 }

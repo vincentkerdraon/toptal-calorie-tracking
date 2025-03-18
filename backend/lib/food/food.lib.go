@@ -2,6 +2,7 @@ package food
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"toptal.com/calorysampleproject/lib/user"
@@ -46,6 +47,33 @@ func (f *Food) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+func (f *Food) Validate() *FoodInvalidError {
+	if f.ID == "" {
+		return &FoodInvalidError{reason: "ID is required"}
+	}
+	if f.Name == "" {
+		return &FoodInvalidError{reason: "Name is required"}
+	}
+	if f.UserID == "" {
+		return &FoodInvalidError{reason: "UserID is required"}
+	}
+	if f.Calories < 0 {
+		return &FoodInvalidError{reason: "Calories must be greater than zero"}
+	}
+	if f.Timestamp.After(time.Now()) {
+		return &FoodInvalidError{reason: "Date must be past or present"}
+	}
+	return nil
+}
+
+type FoodInvalidError struct {
+	reason string
+}
+
+func (e *FoodInvalidError) Error() string {
+	return fmt.Sprintf("FoodInvalidError, %s", e.reason)
+}
+
 type FoodNotFoundError struct{}
 
 func (e *FoodNotFoundError) Error() string {
@@ -62,12 +90,6 @@ type FoodInvalidEditError struct{}
 
 func (e *FoodInvalidEditError) Error() string {
 	return "FoodInvalidEdit"
-}
-
-type EntryInFutureError struct{}
-
-func (e *EntryInFutureError) Error() string {
-	return "EntryInFuture"
 }
 
 type GetInput struct {

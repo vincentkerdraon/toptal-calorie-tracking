@@ -170,7 +170,7 @@ func TestMainIntegrationAsError(t *testing.T) {
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-	expectedBody := `{"Error":"EntryInFuture"}`
+	expectedBody := `{"Error":"FoodInvalidError, ID is required"}`
 	if strings.TrimSpace(string(body)) != expectedBody {
 		t.Errorf("expected body \nwant=%v\ngot =%v", expectedBody, string(body))
 	}

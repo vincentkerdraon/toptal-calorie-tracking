@@ -90,9 +90,9 @@ func forwardFunctionalErrors(err error) any {
 	if errors.As(err, &FoodInvalidEditError) {
 		return food.NewErrorReturnAPI(FoodInvalidEditError)
 	}
-	EntryInFutureError := &food.EntryInFutureError{}
-	if errors.As(err, &EntryInFutureError) {
-		return food.NewErrorReturnAPI(EntryInFutureError)
+	FoodInvalidError := &food.FoodInvalidError{}
+	if errors.As(err, &FoodInvalidError) {
+		return food.NewErrorReturnAPI(FoodInvalidError)
 	}
 	return nil
 }
