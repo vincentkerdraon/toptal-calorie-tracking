@@ -1,8 +1,8 @@
 # Toptal calorie-tracking app
 
 To test this project, start both frontend and backend. By default, 
-- frontend will be exposed on http://localhost:4200/
-- backend is listening to http://localhost:8080/
+- frontend will be exposed on `http://localhost:4200/`
+- backend is listening to `http://localhost:8080/`
 
 if you don't have all the environment but you have docker + vscode, you can use the devcontainer configuration.
 
