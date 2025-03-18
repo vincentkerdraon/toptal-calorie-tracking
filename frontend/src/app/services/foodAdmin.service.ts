@@ -153,8 +153,12 @@ export class FoodAdminService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-          this.notificationService.showMessage(NotificationLevel.Danger,"Error: "+error+ " (operation="+operation+")")
+        if (error.error.Error){
+          this.notificationService.showMessage(NotificationLevel.Danger, "(operation=" + operation + ") Error:" + error.error.Error )
+        }else{
+          this.notificationService.showMessage(NotificationLevel.Danger,"(operation=" + operation + ") " + (error.message || error.toString()) )
+        }
       return of(result as T);
-    };
+    }; 
   }
 }

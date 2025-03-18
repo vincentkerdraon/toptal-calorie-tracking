@@ -2,37 +2,43 @@
 <div class="container mt-5">
   <h2>Reporting</h2>
 
-
   <div class="row justify-content-center">
     <div class="col-md-6">
       <form [formGroup]="foodForm" (ngSubmit)="onSaveFood()">
         <div class="form-row">
-          <div class="input-group">
+          <div class="input-group mb-3"
+            [ngClass]="{'has-error': foodForm.get('userId')?.invalid && foodForm.get('userId')?.touched}">
             <span class="input-group-text" for="userId">User ID</span>
             <input type="text" id="userId" formControlName="userId" class="form-control" placeholder="John.Dow" />
           </div>
 
-          <div class="input-group">
+          <div class="input-group mb-3"
+            [ngClass]="{'has-error': foodForm.get('name')?.invalid && foodForm.get('name')?.touched}">
             <span class="input-group-text" for="name">Food Name</span>
             <input type="text" id="name" formControlName="name" class="form-control"
               placeholder="milk, banana, hamburger" />
           </div>
-          <div class="input-group">
+
+          <div class="input-group mb-3"
+            [ngClass]="{'has-error': foodForm.get('calories')?.invalid && foodForm.get('calories')?.touched}">
             <span class="input-group-text" for="calories">Calories</span>
             <input type="number" id="calories" formControlName="calories" class="form-control"
               placeholder="Enter calories" />
           </div>
-          <div class="input-group">
+
+          <div class="input-group mb-3"
+            [ngClass]="{'has-error': foodForm.get('date')?.invalid && foodForm.get('date')?.touched}">
             <span class="input-group-text" for="date">Date</span>
             <input type="date" id="date" formControlName="date" class="form-control" />
           </div>
-          <div class="input-group align-items-center">
+
+          <div class="input-group align-items-center mb-3">
             <span class="input-group-text" for="cheating">Cheating</span>
-            <div class="form-check ml-2"></div>
             <input type="checkbox" id="cheating" formControlName="cheating" class="form-check-input" />
           </div>
+
           <div class="form-group align-self-end">
-            <button type="submit" class="btn btn-success w-100">Save</button>
+            <button type="submit" class="btn btn-success w-100" [disabled]="foodForm.invalid">Save</button>
           </div>
         </div>
       </form>

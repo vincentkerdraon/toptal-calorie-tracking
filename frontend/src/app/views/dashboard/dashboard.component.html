@@ -5,28 +5,32 @@
   <div class="row justify-content-center">
     <div class="col-md-6">
       <form [formGroup]="foodForm" (ngSubmit)="onAddFood()">
-        <div class="input-group">
+        <div class="input-group mb-3"
+          [ngClass]="{'has-error': foodForm.get('name')?.invalid && foodForm.get('name')?.touched}">
           <span class="input-group-text" for="name">Food Name</span>
           <input type="text" id="name" formControlName="name" class="form-control"
             placeholder="milk, banana, hamburger" />
         </div>
-        <div class="input-group">
+        <div class="input-group mb-3"
+          [ngClass]="{'has-error': foodForm.get('calories')?.invalid && foodForm.get('calories')?.touched}">
           <span class="input-group-text" for="calories">Calories</span>
           <input type="number" id="calories" formControlName="calories" class="form-control"
             placeholder="Enter calories" />
         </div>
-        <div class="input-group">
+        <div class="input-group mb-3"
+          [ngClass]="{'has-error': foodForm.get('date')?.invalid && foodForm.get('date')?.touched}">
           <span class="input-group-text" for="date">Date</span>
           <input type="date" id="date" formControlName="date" class="form-control" />
         </div>
-        <div class="input-group align-items-center">
+        <div class="input-group align-items-center mb-3"
+          [ngClass]="{'has-error': foodForm.get('cheating')?.invalid && foodForm.get('cheating')?.touched}">
           <span class="input-group-text" for="cheating">Cheating</span>
           <div class="form-check ml-2"></div>
           <input type="checkbox" id="cheating" formControlName="cheating" class="form-check-input"
             style="width: 30px; height: 30px;" />
         </div>
         <div class="form-group align-self-end">
-          <button type="submit" class="btn btn-success w-100">Add</button>
+          <button type="submit" class="btn btn-success w-100" [disabled]="foodForm.invalid">Add</button>
         </div>
       </form>
     </div>
