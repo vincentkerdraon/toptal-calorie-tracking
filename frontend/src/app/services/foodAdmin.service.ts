@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import { Food, foodApi, validateFood } from '../models/food.model';
 import { TokenEncoded } from '../models/token.model';
 import { UserId } from '../models/user.model';
+import { NotificationLevel, NotificationService } from './notification.service';
 import { UserService } from './user.service';
 
 interface AdminData {
@@ -21,7 +22,7 @@ export class FoodAdminService {
   private adminData?: AdminData;
   private foodSubject = new BehaviorSubject<Food[]>([]);
 
-  constructor(private http: HttpClient, private userService: UserService) {}
+  constructor(private http: HttpClient, private userService: UserService,private notificationService:NotificationService) {}
 
   public loadAdminData() {
     const user = this.userService.getCurrentUser();
@@ -152,7 +153,7 @@ export class FoodAdminService {
 
   private handleError<T>(operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-      console.error(error);
+          this.notificationService.showMessage(NotificationLevel.Danger,"Error: "+error+ " (operation="+operation+")")
       return of(result as T);
     };
   }

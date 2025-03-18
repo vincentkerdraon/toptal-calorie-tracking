@@ -87,7 +87,7 @@ export class UserService {
     if (!user) {
       throw new Error('User not found');
     }
-    //SampleProject for now not persisting in backend
+    //SampleProject, not persisting in backend
     user.settings = settings;
     this.saveUserToLocalStorage(user);
   }
