@@ -159,6 +159,9 @@ export class ReportingComponent implements OnInit {
     this.foodListFiltered
       // .filter((food) => !userIdFilter || food.userId === userIdFilter)
       .forEach((food) => {
+        if (food.cheating){
+          return
+        }
         const date = new Date(food.timestamp).toISOString().split('T')[0];
         const userId = food.userId;
         const existingEntry = this.caloriesPerDayPerUser.find(
