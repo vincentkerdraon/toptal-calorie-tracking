@@ -30,7 +30,6 @@ Same food object with an id.
 ```
 
 **Example cURL command to test**
-
 ```sh
 curl -X POST http://127.0.0.1:8080/api/foods \
 -H "Authorization: Bearer token_John" \
