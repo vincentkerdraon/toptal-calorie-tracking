@@ -41,8 +41,8 @@ export class UserService {
     this.loadUserFromLocalStorage();
   }
 
-  public getUsersId(): UserId[] {
-    return this.users.map((u) => u.tokenDecoded.id);
+  public getUsers(): User[] {
+    return this.users;
   }
 
   // SampleProject: this is a fake authenticate. In a real application, call the backend.

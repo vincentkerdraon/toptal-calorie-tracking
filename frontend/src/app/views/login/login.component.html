@@ -3,9 +3,10 @@
   <h2 class="text-center mb-4">Simulate Login (with hardcoded tokens)</h2>
   <div class="row">
     <div class="col-md-4 mb-3" *ngFor="let user of users">
-      <div class="card" (click)="auth(user)">
+      <div class="card" (click)="auth(user.tokenDecoded.id)">
         <div class="card-body">
-          <h5 class="card-title">{{ user }}</h5>
+          <h5 class="card-title">{{ user.tokenDecoded.id }} </h5>
+          <p>({{user.tokenDecoded.role}})</p>
         </div>
       </div>
     </div>

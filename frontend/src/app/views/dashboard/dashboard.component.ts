@@ -69,20 +69,27 @@ export class DashboardComponent implements OnInit {
     if (isNaN(to)) {
       to = Date.now();
     }
-    //date_to always includes the whole day
-    to += 24 * 60 * 60 * 1000;
     this.foodListFiltered = this.foodList
       .filter((f) => f.timestamp >= from && f.timestamp <= to)
-      .sort((f1, f2) => f2.timestamp - f1.timestamp);
+      .sort((f1, f2) => {
+      if (f2.timestamp !== f1.timestamp) {
+        return f2.timestamp - f1.timestamp;
+      }
+      if (f2.calories !== f1.calories) {
+        return f2.calories - f1.calories;
+      }
+      return f1.name.localeCompare(f2.name);
+      });
 
     this.calculateCaloriesPerDay();
   }
 
   calculateCaloriesPerDay(): void {
-    //FIXME add entry for day: day doesn't show up in Calories per day
-
     const caloriesMap: { [date: string]: number } = {};
     this.foodListFiltered.forEach((food) => {
+      if (food.cheating){
+        return
+      }
       const date = new Date(food.timestamp).toISOString().split('T')[0];
       if (!caloriesMap[date]) {
         caloriesMap[date] = 0;

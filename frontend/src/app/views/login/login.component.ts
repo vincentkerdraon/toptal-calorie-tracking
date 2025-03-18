@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserId } from '../../models/user.model';
+import { User } from '../../models/user.model';
+import { FoodService } from '../../services/food.service';
+import { NotificationLevel, NotificationService } from '../../services/notification.service';
 import { UserService } from '../../services/user.service';
 
 @Component({
@@ -11,15 +13,16 @@ import { UserService } from '../../services/user.service';
   styles: [],
 })
 export class LoginComponent {
-  users: UserId[];
-  constructor(private router: Router, private userService: UserService) {
-    this.users = this.userService.getUsersId();
+  users: User[];
+  constructor(private router: Router, private userService: UserService,private notificationService: NotificationService,    private foodService: FoodService, ) {
+    this.users = this.userService.getUsers();
   }
 
   auth(user_id: string) {
     if (this.userService.auth(user_id) != null) {
       this.router.navigate(['/dashboard']);
+    }else{
+      this.notificationService.showMessage(NotificationLevel.Danger,"Authentication failed")
     }
-    //FIXME ELSE
   }
 }
